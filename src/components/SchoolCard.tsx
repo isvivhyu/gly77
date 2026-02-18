@@ -23,7 +23,7 @@ const SchoolCard = ({
   priority = false,
 }: SchoolCardProps) => {
   return (
-    <div className="bg-[#eeeff1] rounded-[16px] p-4 h-full flex flex-col">
+    <div className="bg-[#F6F3FA] rounded-[16px] p-4 h-full flex flex-col shadow-sm">
       <div className="w-full h-48 rounded-[10px] overflow-hidden mb-3 flex items-center justify-center bg-white p-2">
         <Image
           src={imageSrc}
@@ -37,11 +37,11 @@ const SchoolCard = ({
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
         />
       </div>
-      <h4 className="text-black text-base font-bold">
+      <h4 className="text-black text-[24px] font-bold">
         <span>{schoolName}</span>
         <span className="relative group inline-block ml-1 -mt-1 align-middle">
           <i className="ri-verified-badge-fill text-[#774BE5] text-xl cursor-pointer"></i>
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[14px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
             Verified by Aralya
             <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
               <div className="border-4 border-transparent border-t-[#774BE5]"></div>
@@ -50,8 +50,8 @@ const SchoolCard = ({
         </span>
       </h4>
       <div className="flex items-center gap-2 mt-5">
-        <i className="ri-map-pin-line text-[#374151] text-lg"></i>
-        <p className="text-base font-medium text-[#374151]">{location}</p>
+        <i className="ri-map-pin-line text-[#374151] text-[16px]"></i>
+        <p className="text-[16px] font-medium text-[#374151]">{location}</p>
       </div>
       <div className="flex w-full mt-2.5 gap-2 flex-wrap">
         {tags.map((tag, index) => (
@@ -59,12 +59,12 @@ const SchoolCard = ({
             key={index}
             className="border border-[#cecece] rounded-full py-1 px-3 font-medium flex items-center justify-center"
           >
-            <p className="text-sm text-[#374151]">{tag}</p>
+            <p className="text-[14px] text-[#374151]">{tag}</p>
           </div>
         ))}
       </div>
       <div className="flex items-center justify-between mt-auto pt-5">
-        <p className="text-[#0E1C29] font-bold text-base">
+        <p className="text-[#0E1C29] font-bold text-[20px]">
           {(() => {
             const hasPerYear = priceRange.endsWith(" / year");
             const base = hasPerYear ? priceRange.slice(0, -7) : priceRange;
@@ -76,7 +76,7 @@ const SchoolCard = ({
         </p>
         <Link
           href={schoolSlug ? `/directory/${schoolSlug}` : "/directory"}
-          className="bg-[#774BE5] w-fit text-white p-4 rounded-full text-sm font-semibold flex items-center h-11.5"
+          className="bg-[#774BE5] w-fit text-white p-4 rounded-full text-[14px] font-semibold flex items-center h-11.5"
         >
           View Info
         </Link>

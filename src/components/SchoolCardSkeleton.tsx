@@ -10,7 +10,7 @@ export const SchoolCardSkeleton: React.FC<SchoolCardSkeletonProps> = ({
 }) => {
   return (
     <div
-      className={`bg-white rounded-lg border border-gray-200 overflow-hidden ${className}`}
+      className={`bg-[#F6F3FA] rounded-lg border border-gray-200 overflow-hidden shadow-sm ${className}`}
     >
       {/* Image skeleton */}
       <SkeletonLoader className="h-48 w-full" />

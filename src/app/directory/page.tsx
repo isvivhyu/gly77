@@ -619,12 +619,12 @@ const SchoolDirectoryContent = () => {
                       }
                       setInputFocused(false);
                     }}
-                    className={`px-4 md:px-6 py-2.5 md:py-3 text-sm font-semibold flex items-center justify-center gap-2 text-black relative ${activeCategory === category.id
+                    className={`px-4 md:px-6 py-2.5 md:py-3 text-[14px] font-semibold flex items-center justify-center gap-2 text-black relative ${activeCategory === category.id
                       ? "border-b-2 border-black"
                       : "border-b-2 border-transparent"
                       } transition-all duration-300 ease-in-out`}
                   >
-                    <i className={`${category.icon} text-base`}></i>
+                    <i className={`${category.icon} text-[16px]`}></i>
                     <span>{category.label}</span>
                   </button>
                 ))}
@@ -812,12 +812,12 @@ const SchoolDirectoryContent = () => {
       <section className="w-full md:px-10 px-5 pb-25 pt-10 bg-white">
         {(searchQuery || cityQuery) && (
           <div className="mb-6">
-            <h2 className="text-2xl font-semibold text-[#0E1C29] mb-2">
+            <h2 className="text-[18px] font-semibold text-[#0E1C29] mb-2">
               {cityQuery
                 ? `Schools in ${cityQuery}`
                 : `Search Results for "${searchQuery}"`}
             </h2>
-            <p className="text-gray-600">
+            <p className="text-[15px] text-gray-600">
               Found {filteredSchools.length} school
               {filteredSchools.length !== 1 ? "s" : ""}
             </p>
@@ -829,7 +829,7 @@ const SchoolDirectoryContent = () => {
           <div className="mb-4">
             <div className="flex flex-wrap gap-2">
               {budgetFilter && (
-                <div className="flex items-center gap-2 bg-[#774BE5]/10 text-[#774BE5] px-3 py-2 rounded-full text-sm font-medium">
+                <div className="flex items-center gap-2 bg-[#774BE5]/10 text-[#774BE5] px-3 py-2 rounded-full text-[14px] font-medium">
                   <i className="ri-money-dollar-circle-line"></i>
                   <span>
                     {
@@ -851,7 +851,7 @@ const SchoolDirectoryContent = () => {
                 </div>
               )}
               {cityFilter && (
-                <div className="flex items-center gap-2 bg-[#774BE5]/10 text-[#774BE5] px-3 py-2 rounded-full text-sm font-medium">
+                <div className="flex items-center gap-2 bg-[#774BE5]/10 text-[#774BE5] px-3 py-2 rounded-full text-[14px] font-medium">
                   <i className="ri-map-pin-line"></i>
                   <span>{cityFilter}</span>
                   <button
@@ -863,7 +863,7 @@ const SchoolDirectoryContent = () => {
                 </div>
               )}
               {curriculumFilter && (
-                <div className="flex items-center gap-2 bg-[#774BE5]/10 text-[#774BE5] px-3 py-2 rounded-full text-sm font-medium">
+                <div className="flex items-center gap-2 bg-[#774BE5]/10 text-[#774BE5] px-3 py-2 rounded-full text-[14px] font-medium">
                   <i className="ri-book-open-line"></i>
                   <span>{curriculumFilter}</span>
                   <button
@@ -882,7 +882,7 @@ const SchoolDirectoryContent = () => {
                   setCurriculumFilter("");
                   setLocalSearchQuery("");
                 }}
-                className="text-gray-500 hover:text-gray-700 text-sm font-medium px-3 py-2 rounded-full hover:bg-gray-100 transition-colors"
+                className="text-gray-500 hover:text-gray-700 text-[14px] font-medium px-3 py-2 rounded-full hover:bg-gray-100 transition-colors"
               >
                 Clear all
               </button>
@@ -892,14 +892,14 @@ const SchoolDirectoryContent = () => {
 
         {/* Desktop Info Text */}
         <div className="hidden md:block mb-6">
-          <h6 className="font-medium text-black text-sm">
+          <h6 className="font-medium text-black text-[15px]">
             We&apos;re still adding more preschools across Metro Manila.
           </h6>
         </div>
 
         {/* Mobile Info Text */}
         <div className="md:hidden mb-6">
-          <h6 className="font-medium text-black text-sm">
+          <h6 className="font-medium text-black text-[15px]">
             We&apos;re still adding more preschools across Metro Manila.
           </h6>
         </div>
@@ -911,13 +911,13 @@ const SchoolDirectoryContent = () => {
               {initialLoading || isFiltering ? (
                 <div className="flex items-center gap-2">
                   <LoadingSpinner size="sm" />
-                  <h3 className="text-lg font-semibold text-[#0E1C29]">
+                  <h3 className="text-[18px] font-semibold text-[#0E1C29]">
                     {initialLoading ? "Loading schools..." : "Filtering schools..."}
                   </h3>
                 </div>
               ) : (
                 <>
-                  <h3 className="text-lg font-semibold text-[#0E1C29]">
+                  <h3 className="text-[18px] font-semibold text-[#0E1C29]">
                     {filteredSchools.length > 0
                       ? `${filteredSchools.length} School${filteredSchools.length !== 1 ? "s" : ""
                       } Found`
@@ -933,7 +933,7 @@ const SchoolDirectoryContent = () => {
               )}
             </div>
             {!initialLoading && !isFiltering && (
-              <div className="text-sm text-gray-500">
+              <div className="text-[14px] text-gray-500">
                 Showing {displayedSchools.length} of {filteredSchools.length}
               </div>
             )}
@@ -949,7 +949,7 @@ const SchoolDirectoryContent = () => {
                 style={{ animationDirection: "reverse", animationDuration: "0.8s" }}
               />
             </div>
-            <p className="text-[#774BE5] font-medium text-lg mt-4 animate-pulse">
+            <p className="text-[#774BE5] font-medium text-[18px] mt-4 animate-pulse">
               Loading schools...
             </p>
           </div>
@@ -964,10 +964,10 @@ const SchoolDirectoryContent = () => {
             <div className="w-24 h-24 bg-[#774BE5]/10 rounded-full flex items-center justify-center mx-auto mb-6">
               <i className="ri-search-line text-[#774BE5] text-3xl"></i>
             </div>
-            <h3 className="text-xl font-semibold text-[#0E1C29] mb-2">
+            <h3 className="text-[18px] font-semibold text-[#0E1C29] mb-2">
               No schools found
             </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+            <p className="text-[15px] text-gray-600 mb-6 max-w-md mx-auto">
               {searchQuery.trim()
                 ? "This school is not in our database yet. We are adding more schools weekly."
                 : "This school is not in our database yet. We are adding more schools weekly.weekly."}
@@ -980,7 +980,7 @@ const SchoolDirectoryContent = () => {
                 setCurriculumFilter("");
                 setLocalSearchQuery("");
               }}
-              className="bg-[#774BE5] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#774BE5]/90 transition-colors"
+              className="bg-[#774BE5] text-white px-6 py-3 rounded-lg text-[15px] font-medium hover:bg-[#774BE5]/90 transition-colors"
             >
               Clear all filters
             </button>

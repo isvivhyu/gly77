@@ -263,13 +263,13 @@ const SchoolDetails = () => {
   // Show loading state
   if (loading) {
     return (
-      <section className="w-full bg-[#F9FAFB] flex flex-col items-center pb-40 px-5">
+      <section className="w-full bg-white flex flex-col items-center pb-40 px-5">
         <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
           <Navbar textColor="black" />
         </div>
         <div className="pt-13 flex flex-col items-center md:max-w-[1000px] w-full px-0 mt-28">
           {/* Header Skeleton */}
-          <div className="rounded-[16px] bg-white p-4 flex md:flex-row flex-col gap-4 md:items-center w-full">
+          <div className="rounded-[16px] bg-[#F6F3FA] p-4 flex md:flex-row flex-col gap-4 md:items-center w-full shadow-sm">
             <SkeletonLoader className="w-80 h-50" />
             <div className="flex flex-col gap-2">
               <SkeletonLoader className="h-8 w-64" />
@@ -284,7 +284,7 @@ const SchoolDetails = () => {
           {/* Two-column skeleton: Overview (left) + Contact (right) */}
           <div className="w-full mt-6 grid grid-cols-1 md:grid-cols-[1fr_340px] gap-8 md:gap-10">
             <div className="flex flex-col gap-10">
-              <div className="rounded-2xl p-8 w-full bg-white">
+              <div className="rounded-2xl p-8 w-full bg-[#F6F3FA] shadow-sm">
                 <div className="flex gap-2 items-center -ml-1 mb-4">
                   <SkeletonLoader className="h-6 w-6 rounded" />
                   <SkeletonLoader className="h-6 w-24" />
@@ -300,13 +300,17 @@ const SchoolDetails = () => {
               </div>
             </div>
             <div className="md:sticky md:top-24">
-              <div className="rounded-2xl bg-white p-6 flex flex-col gap-4">
-                <SkeletonLoader className="h-6 w-32" />
-                <div className="grid grid-cols-2 gap-3">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <SkeletonLoader key={index} className="h-12 rounded-full" />
-                  ))}
+              <div className="rounded-2xl bg-[#F6F3FA] p-6 shadow-sm border border-gray-100 flex flex-col gap-4 items-center justify-center min-h-[200px]">
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-full border-4 border-[#774BE5]/20 border-t-[#774BE5] animate-spin" />
+                  <div
+                    className="absolute inset-0 w-12 h-12 rounded-full border-4 border-transparent border-b-[#9B6EF3]/50 animate-spin"
+                    style={{ animationDirection: "reverse", animationDuration: "0.8s" }}
+                  />
                 </div>
+<p className="text-[#774BE5] font-medium text-[14px] animate-pulse">
+                Loading...
+              </p>
               </div>
             </div>
           </div>
@@ -318,21 +322,21 @@ const SchoolDetails = () => {
   // Show 404 if school not found
   if (!school) {
     return (
-      <section className="w-full bg-[#F9FAFB] flex flex-col items-center pb-40 px-5">
+      <section className="w-full bg-white flex flex-col items-center pb-40 px-5">
         <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
           <Navbar textColor="black" />
         </div>
         <div className="pt-13 flex flex-col items-center md:max-w-[1000px] w-full px-0 mt-28">
-          <div className="rounded-[16px] bg-white p-8 text-center">
-            <h1 className="text-4xl font-bold text-[#0E1C29] mb-4">
+          <div className="rounded-[16px] bg-[#F6F3FA] p-8 text-center shadow-sm">
+            <h1 className="text-[24px] font-bold text-[#0E1C29] mb-4">
               School Not Found
             </h1>
-            <p className="text-lg text-gray-600 mb-6">
+            <p className="text-[15px] text-gray-600 mb-6">
               The school you&apos;re looking for doesn&apos;t exist.
             </p>
             <Link
               href="/directory"
-              className="bg-[#774BE5] text-white px-6 py-3 rounded-full font-semibold"
+              className="bg-[#774BE5] text-white px-6 py-3 rounded-full text-[14px] font-semibold"
             >
               Back to Directory
             </Link>
@@ -344,7 +348,7 @@ const SchoolDetails = () => {
 
   return (
     <>
-      <section className="w-full bg-[#EFE8FF] flex flex-col items-center pb-40 px-5">
+      <section className="w-full bg-white flex flex-col items-center pb-40 px-5">
         {/* Navbar */}
         <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
           <Navbar textColor="black" />
@@ -361,15 +365,15 @@ const SchoolDetails = () => {
               <div className="w-10 h-10 rounded-full bg-[#774BE5] text-white flex items-center justify-center hover:bg-[#6B3FD6] transition-colors shrink-0">
                 <i className="ri-arrow-left-line text-lg"></i>
               </div>
-              <span className="absolute left-1/2 -translate-x-1/2 text-[#774BE5] font-semibold">
+              <span className="absolute left-1/2 -translate-x-1/2 text-[#774BE5] font-semibold text-[14px]">
                 Back to Browse
               </span>
             </Link>
           </div>
 
           {/* Header */}
-          <div className="rounded-[16px] bg-white p-4 flex md:flex-row flex-col gap-4 md:items-center w-full">
-            <div className="w-full md:w-80 md:h-48 bg-gray-200 border border-gray-200 rounded-[10px] bg-white overflow-hidden flex items-center justify-center">
+          <div className="rounded-[16px] bg-[#F6F3FA] p-4 flex md:flex-row flex-col gap-4 md:items-center w-full shadow-sm">
+            <div className="w-full md:w-80 md:h-48 border border-gray-200 rounded-[10px] bg-white overflow-hidden flex items-center justify-center">
               <Image
                 src={optimizeImageUrl(school?.logo_banner) || "/images/Logo.png"}
                 alt={school?.school || "School Logo"}
@@ -380,11 +384,11 @@ const SchoolDetails = () => {
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <h4 className="text-[#0E1C29] md:text-4xl text-lg md:font-medium font-semibold">
+                <h4 className="text-[#0E1C29] text-[24px] font-semibold">
                   <span>{school?.school || "School Name"}</span>
                   <span className="relative group inline-block ml-1 -mt-1 align-middle">
-                    <i className="ri-verified-badge-fill text-[#774BE5] text-xl md:text-2xl cursor-pointer"></i>
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                    <i className="ri-verified-badge-fill text-[#774BE5] text-xl cursor-pointer"></i>
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[14px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                       Verified by Aralya
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
                         <div className="border-4 border-transparent border-t-[#774BE5]"></div>
@@ -410,36 +414,36 @@ const SchoolDetails = () => {
               </div>
               <div className="flex items-center my-1 gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                  <i className="ri-map-pin-line text-[#374151] text-lg"></i>
-                  <p className="text-base font-medium text-[#374151]">
+                  <i className="ri-map-pin-line text-[#374151] text-[16px]"></i>
+                  <p className="text-[16px] font-medium text-[#374151]">
                     {school?.city || "City"}
                   </p>
                 </div>
                 <i className="ri-checkbox-blank-circle-fill text-black text-[6px]"></i>
-                <p className="text-sm font-medium text-[#374151]">
+                <p className="text-[14px] font-medium text-[#374151]">
                   Updated: {formatLastUpdated(school?.updated_at)}
                 </p>
               </div>
               {school?.website && (
                 <div className="flex items-center my-1">
-                  <i className="ri-global-line text-[#774BE5] text-lg"></i>
+                  <i className="ri-global-line text-[#774BE5] text-[16px]"></i>
                   <a
                     href={school?.website || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-base font-medium text-[#774BE5] hover:underline"
+                    className="text-[16px] font-medium text-[#774BE5] hover:underline"
                   >
                     Official website ↗
                   </a>
                 </div>
               )}
-              <p className="text-[#0E1C29] font-bold text-lg">
+              <p className="text-[#0E1C29] font-bold text-[20px]">
                 {school?.min_tuition || "N/A"} -{" "}
                 {school?.max_tuition || "N/A"}
                 {(school?.min_tuition?.toLowerCase().includes("/month") || school?.max_tuition?.toLowerCase().includes("/month")) ? "" : " / year"}
               </p>
               {school?.summary && (
-                <p className="text-sm font-medium text-[#374151]">
+                <p className="text-[15px] font-medium text-[#374151]">
                   {school.summary}
                 </p>
               )}
@@ -450,65 +454,65 @@ const SchoolDetails = () => {
           <div className="w-full mt-6 grid grid-cols-1 md:grid-cols-[1fr_340px] gap-8 md:gap-10 items-start overflow-visible">
             {/* Row 1: Overview */}
             <div className="min-w-0 md:row-start-1 md:col-start-1">
-              <div className="rounded-2xl p-8 w-full bg-white shadow-sm border border-gray-100">
+              <div className="rounded-2xl p-8 w-full bg-[#F6F3FA] shadow-sm border border-gray-100">
                 <div className="flex gap-2 items-center -ml-1">
-                  <i className="ri-book-open-line text-[#0E1C29] md:text-2xl text-xl mt-0.5 ml-1"></i>
-                  <p className="md:text-2xl text-lg text-[#0E1C29] font-semibold">
+                  <i className="ri-book-open-line text-[#0E1C29] text-[18px] mt-0.5 ml-1"></i>
+                  <p className="text-[18px] text-[#0E1C29] font-semibold">
                     Overview
                   </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 grid-cols-1 gap-x-12 gap-y-6 mt-8">
                   <div className="flex flex-col gap-2">
-                    <p className="md:text-xl text-base text-[#0E1C29] font-semibold">
+                    <p className="text-[16px] text-[#0E1C29] font-semibold">
                       Curriculum
                     </p>
-                    <p className="text-[#0E1C29] font-normal text-sm">
+                    <p className="text-[#0E1C29] font-normal text-[15px]">
                       {school?.curriculum || "Not specified"}
                     </p>
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <p className="md:text-xl text-base text-[#0E1C29] font-semibold">
+                    <p className="text-[16px] text-[#0E1C29] font-semibold">
                       Class Size
                     </p>
-                    <p className="text-[#0E1C29] font-normal text-sm">
+                    <p className="text-[#0E1C29] font-normal text-[15px]">
                       {school?.class_size || "Not specified"}
                     </p>
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <p className="md:text-xl text-base text-[#0E1C29] font-semibold">
+                    <p className="text-[16px] text-[#0E1C29] font-semibold">
                       Schedule
                     </p>
-                    <p className="text-[#0E1C29] font-normal text-sm">
+                    <p className="text-[#0E1C29] font-normal text-[15px]">
                       {school?.schedule || "Not specified"}
                     </p>
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <p className="md:text-xl text-base text-[#0E1C29] font-semibold">
+                    <p className="text-[16px] text-[#0E1C29] font-semibold">
                       Programs
                     </p>
-                    <p className="text-[#0E1C29] font-normal text-sm">
+                    <p className="text-[#0E1C29] font-normal text-[15px]">
                       {school?.programs || "Not specified"}
                     </p>
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <p className="md:text-xl text-base text-[#0E1C29] font-semibold">
+                    <p className="text-[16px] text-[#0E1C29] font-semibold">
                       After-school Care
                     </p>
-                    <p className="text-[#0E1C29] font-normal text-sm">
+                    <p className="text-[#0E1C29] font-normal text-[15px]">
                       {school?.care || "Not specified"}
                     </p>
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <p className="md:text-xl text-base text-[#0E1C29] font-semibold">
+                    <p className="text-[16px] text-[#0E1C29] font-semibold">
                       Special Education Support
                     </p>
-                    <p className="text-[#0E1C29] font-normal text-sm">
+                    <p className="text-[#0E1C29] font-normal text-[15px]">
                       {school?.support || "Not specified"}
                     </p>
                   </div>
@@ -522,8 +526,8 @@ const SchoolDetails = () => {
               className="md:col-start-2 md:row-start-1 md:row-span-3 md:self-start w-full md:min-h-0"
             >
               <div ref={contactStickyRef} className="z-10 w-full">
-                <div className="rounded-2xl bg-white p-6 shadow-md border border-gray-100 flex flex-col gap-4">
-                  <h4 className="text-[#0E1C29] text-xl font-semibold">
+                <div className="rounded-2xl bg-[#F6F3FA] p-6 shadow-sm border border-gray-100 flex flex-col gap-4">
+                  <h4 className="text-[#0E1C29] text-[18px] font-semibold">
                     Contact School
                   </h4>
 
@@ -532,7 +536,7 @@ const SchoolDetails = () => {
                       href={`tel:${(school?.number || "").split(",")[0]?.trim() || ""}`}
                       className="bg-[#774BE5] hover:bg-[#6B3FD6] rounded-full px-4 py-3 transition-colors"
                     >
-                      <p className="text-white text-center font-semibold text-sm">
+                      <p className="text-white text-center font-semibold text-[14px]">
                         Call
                       </p>
                     </Link>
@@ -540,7 +544,7 @@ const SchoolDetails = () => {
                       href={`sms:${(school?.number || "").split(",")[0]?.trim() || ""}`}
                       className="bg-[#774BE5] hover:bg-[#6B3FD6] rounded-full px-4 py-3 transition-colors"
                     >
-                      <p className="text-white text-center font-semibold text-sm">
+                      <p className="text-white text-center font-semibold text-[14px]">
                         Text
                       </p>
                     </Link>
@@ -550,7 +554,7 @@ const SchoolDetails = () => {
                       rel="noopener noreferrer"
                       className="bg-[#774BE5] hover:bg-[#6B3FD6] rounded-full px-4 py-3 transition-colors"
                     >
-                      <p className="text-white text-center font-semibold text-sm">
+                      <p className="text-white text-center font-semibold text-[14px]">
                         Facebook
                       </p>
                     </Link>
@@ -558,7 +562,7 @@ const SchoolDetails = () => {
                       href={`mailto:${school?.email || ""}`}
                       className="bg-[#774BE5] hover:bg-[#6B3FD6] rounded-full px-4 py-3 transition-colors"
                     >
-                      <p className="text-white text-center font-semibold text-sm">
+                      <p className="text-white text-center font-semibold text-[14px]">
                         Email
                       </p>
                     </Link>
@@ -568,14 +572,14 @@ const SchoolDetails = () => {
             </div>
 
             {/* Row 2: Location – full width (span both columns) */}
-            <div className="w-full md:row-start-2 md:col-start-1 md:col-span-2 rounded-3xl bg-white p-6 flex flex-col gap-4">
+            <div className="w-full md:row-start-2 md:col-start-1 md:col-span-2 rounded-3xl bg-[#F6F3FA] p-6 flex flex-col gap-4 shadow-sm">
               <div className="flex gap-2 items-center -ml-1 mb-2">
-                <i className="ri-map-pin-line text-[#0E1C29] md:text-2xl text-xl mt-0.5 ml-1"></i>
-                <p className="md:text-2xl text-lg text-[#0E1C29] font-semibold">
+                <i className="ri-map-pin-line text-[#0E1C29] text-[18px] mt-0.5 ml-1"></i>
+                <p className="text-[18px] text-[#0E1C29] font-semibold">
                   Location
                 </p>
               </div>
-              <p className="text-[#0E1C29] font-normal text-sm">
+              <p className="text-[#0E1C29] font-normal text-[15px]">
                 {school?.location && school.location.trim() !== ""
                   ? school.location
                   : school?.city && school.city.trim() !== ""
@@ -593,7 +597,7 @@ const SchoolDetails = () => {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-[#774BE5] rounded-full px-4 py-2 inline-flex items-center text-white font-semibold text-sm"
+                  className="bg-[#774BE5] rounded-full px-4 py-2 inline-flex items-center text-white font-semibold text-[14px]"
                 >
                   Google Maps
                 </a>
@@ -601,15 +605,15 @@ const SchoolDetails = () => {
             </div>
 
             {/* Row 3: Help – full width (span both columns) */}
-            <div className="w-full -mb-16 md:row-start-3 md:col-start-1 md:col-span-2 rounded-3xl bg-white p-6 flex flex-col gap-4 shadow-sm border border-gray-100">
+            <div className="w-full -mb-16 md:row-start-3 md:col-start-1 md:col-span-2 rounded-3xl bg-[#F6F3FA] p-6 flex flex-col gap-4 shadow-sm border border-gray-100">
               <div className="flex gap-2 items-center -ml-1 mb-2">
-                <i className="ri-lightbulb-line text-[#0E1C29] md:text-2xl text-xl mt-0.5 ml-1"></i>
-                <h4 className="md:text-2xl text-lg text-[#0E1C29] font-semibold">
+                <i className="ri-lightbulb-line text-[#0E1C29] text-[18px] mt-0.5 ml-1"></i>
+                <h4 className="text-[18px] text-[#0E1C29] font-semibold">
                   Help us keep this information accurate
                 </h4>
               </div>
               <div className="flex flex-col gap-2">
-                <p className="text-sm text-[#374151]">
+                <p className="text-[15px] text-[#374151]">
                   If you notice outdated or incorrect details, message us on Facebook and we'll review it promptly.
                 </p>
                 <Link
@@ -618,7 +622,7 @@ const SchoolDetails = () => {
                   rel="noopener noreferrer"
                   className="bg-[#774BE5] rounded-full px-4 py-2 w-fit mt-2 flex items-center hover:bg-[#6B3FD6] transition-colors"
                 >
-                  <span className="text-white text-center font-semibold text-sm">
+                  <span className="text-white text-center font-semibold text-[14px]">
                     Message on Facebook
                   </span>
                 </Link>
@@ -640,7 +644,7 @@ const SchoolDetails = () => {
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-2xl font-semibold text-[#0E1C29]">
+              <h3 className="text-[18px] font-semibold text-[#0E1C29]">
                 Share this school
               </h3>
               <button
@@ -665,10 +669,10 @@ const SchoolDetails = () => {
                 </div>
 
                 <div className="flex flex-col gap-2 w-1/2">
-                  <h4 className="text-xl font-semibold text-[#0E1C29] mb-2">
+                  <h4 className="text-[24px] font-semibold text-[#0E1C29] mb-2">
                     {school?.school || "School Name"}
                   </h4>
-                  <div className="flex flex-col gap-1 text-sm text-[#374151]">
+                  <div className="flex flex-col gap-1 text-[15px] text-[#374151]">
                     <div className="flex items-center gap-2">
                       <i className="ri-map-pin-line"></i>
                       <span>{school?.city || "City"}</span>
@@ -720,7 +724,7 @@ const SchoolDetails = () => {
                     className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
                   >
                     <i className="ri-messenger-fill text-[#0084FF] text-xl"></i>
-                    <span className="font-medium text-[#0E1C29]">Messenger</span>
+                    <span className="font-medium text-[16px] text-[#0E1C29]">Messenger</span>
                   </button>
 
                   {/* 3. Viber */}
@@ -729,7 +733,7 @@ const SchoolDetails = () => {
                     className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
                   >
                     <i className="ri-message-3-fill text-[#665CAC] text-xl"></i>
-                    <span className="font-medium text-[#0E1C29]">Viber</span>
+                    <span className="font-medium text-[16px] text-[#0E1C29]">Viber</span>
                   </button>
 
                   {/* 4. Facebook */}
@@ -738,7 +742,7 @@ const SchoolDetails = () => {
                     className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
                   >
                     <i className="ri-facebook-fill text-[#1877F2] text-xl"></i>
-                    <span className="font-medium text-[#0E1C29]">Facebook</span>
+                    <span className="font-medium text-[16px] text-[#0E1C29]">Facebook</span>
                   </button>
                 </div>
               ) : (
@@ -760,12 +764,12 @@ const SchoolDetails = () => {
                     {linkCopied ? (
                       <>
                         <i className="ri-check-line text-lg"></i>
-                        <span className="font-medium text-[#0E1C29]">Link Copied!</span>
+                        <span className="font-medium text-[16px] text-[#0E1C29]">Link Copied!</span>
                       </>
                     ) : (
                       <>
                         <i className="ri-link text-lg"></i>
-                        <span className="font-medium text-[#0E1C29]">Copy Link</span>
+                        <span className="font-medium text-[16px] text-[#0E1C29]">Copy Link</span>
                       </>
                     )}
                   </button>
