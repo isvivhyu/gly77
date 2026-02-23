@@ -15,6 +15,7 @@ import React, {
 import { useSearchParams } from "next/navigation";
 import { LoadingSpinner, ButtonWithLoading } from "@/components/LoadingSpinner";
 import { optimizeImageUrl } from "@/lib/cloudinary";
+import { cityToSlug } from "@/lib/cityUtils";
 
 // Helper function to check if a school is in a specific city
 // Uses the same matching logic as SchoolService for consistency
@@ -96,8 +97,9 @@ const SchoolDirectoryContent = () => {
   // Handle option selection from dropdown
   const handleOptionSelect = (value: string) => {
     if (activeCategory === "city") {
-      setCityFilter(value);
-      setLocalSearchQuery(value);
+      // Navigate to city page
+      window.location.href = `/preschools-in-${cityToSlug(value)}/`;
+      return;
     } else if (activeCategory === "budget") {
       setBudgetFilter(value);
       const selectedBudget = budgetOptions.find((b) => b.value === value);

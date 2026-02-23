@@ -10,6 +10,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { ButtonWithLoading } from "@/components/LoadingSpinner";
 import { SchoolService } from "@/lib/schoolService";
+import { cityToSlug } from "@/lib/cityUtils";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -212,8 +213,9 @@ export default function Home() {
   // Handle option selection from dropdown
   const handleOptionSelect = (value: string) => {
     if (activeCategory === "city") {
-      setCityFilter(value);
-      setSearchQuery(value);
+      // Navigate to city page
+      window.location.href = `/preschools-in-${cityToSlug(value)}/`;
+      return;
     } else if (activeCategory === "budget") {
       setBudgetFilter(value);
       const selectedBudget = budgetOptions.find((b) => b.value === value);

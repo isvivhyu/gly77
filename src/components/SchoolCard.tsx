@@ -64,7 +64,7 @@ const SchoolCard = ({
         ))}
       </div>
       <div className="flex items-center justify-between mt-auto pt-5">
-        <p className="text-[#0E1C29] font-bold text-[20px]">
+        <p className="text-[#0E1C29] font-bold text-[16px] md:text-[20px]">
           {(() => {
             const hasPerYear = priceRange.endsWith(" / year");
             const base = hasPerYear ? priceRange.slice(0, -7) : priceRange;
