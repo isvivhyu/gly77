@@ -24,7 +24,7 @@ const SchoolCard = ({
 }: SchoolCardProps) => {
   return (
     <div className="bg-[#F6F3FA] rounded-[16px] p-4 h-full flex flex-col shadow-sm">
-      <div className="w-full h-48 rounded-[10px] overflow-hidden mb-3 flex items-center justify-center bg-white p-2">
+      <div className="relative w-full h-48 rounded-[10px] overflow-hidden mb-3 flex items-center justify-center bg-white p-2">
         <Image
           src={imageSrc}
           alt={imageAlt}
@@ -36,18 +36,18 @@ const SchoolCard = ({
           quality={90}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
         />
-      </div>
-      <h4 className="text-black text-[24px] font-bold">
-        <span>{schoolName}</span>
-        <span className="relative group inline-block ml-1 -mt-1 align-middle">
-          <i className="ri-verified-badge-fill text-[#774BE5] text-xl cursor-pointer"></i>
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[14px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+        <span className="absolute bottom-2 right-2 group inline-flex">
+          <i className="ri-verified-badge-fill text-[#774BE5] text-xl cursor-pointer drop-shadow-sm"></i>
+          <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[14px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
             Verified by Aralya
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+            <div className="absolute top-full right-4 -mt-1">
               <div className="border-4 border-transparent border-t-[#774BE5]"></div>
             </div>
           </div>
         </span>
+      </div>
+      <h4 className="text-black text-[24px] font-bold">
+        {schoolName}
       </h4>
       <div className="flex items-center gap-2 mt-5">
         <i className="ri-map-pin-line text-[#374151] text-[16px]"></i>

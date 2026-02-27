@@ -657,8 +657,8 @@ const SchoolDetails = () => {
 
             {/* School Image and Details */}
             <div className="mb-6">
-              <div className="w-full h-48  overflow-hidden flex items-center justify-center gap-4 mb-4">
-                <div className="w-1/2 bg-gray-200 border border-gray-200 bg-white rounded-lg">
+              <div className="w-full flex items-stretch gap-4 mb-4">
+                <div className="w-2/5 h-48 flex-shrink-0 bg-gray-200 border border-gray-200 bg-white rounded-lg overflow-hidden flex items-center justify-center">
                   <Image
                     src={optimizeImageUrl(school?.logo_banner) || "/images/Logo.png"}
                     alt={school?.school || "School Logo"}
@@ -668,8 +668,8 @@ const SchoolDetails = () => {
                   />
                 </div>
 
-                <div className="flex flex-col gap-2 w-1/2">
-                  <h4 className="text-[24px] font-semibold text-[#0E1C29] mb-2">
+                <div className="flex flex-col gap-2 w-3/5 min-w-0">
+                  <h4 className="text-[24px] font-semibold text-[#0E1C29] mb-2 break-words leading-tight">
                     {school?.school || "School Name"}
                   </h4>
                   <div className="flex flex-col gap-1 text-[15px] text-[#374151]">

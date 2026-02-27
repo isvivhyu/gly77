@@ -36,11 +36,11 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: [
-      { url: `${baseUrl}/favicon.ico`, sizes: "any" },
-      { url: `${baseUrl}/favicon.ico`, type: "image/x-icon" },
+      { url: `${baseUrl}/images/card-logo.svg`, type: "image/svg+xml" },
+      { url: `${baseUrl}/images/card-logo.svg`, sizes: "any" },
     ],
-    apple: `${baseUrl}/favicon.ico`,
-    shortcut: `${baseUrl}/favicon.ico`,
+    apple: `${baseUrl}/images/card-logo.svg`,
+    shortcut: `${baseUrl}/images/card-logo.svg`,
   },
   alternates: {
     canonical: `${baseUrl}/`,
