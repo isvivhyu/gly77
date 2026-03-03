@@ -25,7 +25,9 @@ export async function generateMetadata({
     // Fetch school data to get the actual school name for title
     const { data: schools, error } = await supabaseServer
       .from("schools")
-      .select("school, city, min_tuition, max_tuition, curriculum, logo_banner, summary")
+      .select(
+        "school, city, min_tuition, max_tuition, curriculum, logo_banner, summary",
+      )
       .order("school");
 
     if (!error && schools) {
@@ -47,8 +49,12 @@ export async function generateMetadata({
           }
 
           if (school.min_tuition && school.max_tuition) {
-            const isPerMonth = school.min_tuition.toLowerCase().includes("/month") || school.max_tuition.toLowerCase().includes("/month");
-            parts.push(`₱${school.min_tuition} - ₱${school.max_tuition}${isPerMonth ? "" : "/year"}`);
+            const isPerMonth =
+              school.min_tuition.toLowerCase().includes("/month") ||
+              school.max_tuition.toLowerCase().includes("/month");
+            parts.push(
+              `₱${school.min_tuition} - ₱${school.max_tuition}${isPerMonth ? "" : "/year"}`,
+            );
           }
 
           return parts.length > 0
@@ -57,11 +63,14 @@ export async function generateMetadata({
         };
 
         const ogDescription = buildDescription();
-        const metaDescription = school.summary ||
+        const metaDescription =
+          school.summary ||
           `View ${school.school} on Aralya. ${school.city ? `Located in ${school.city}.` : ""} Compare tuition, curriculum, and contact information.`;
 
         const imageUrl = school.logo_banner
-          ? (school.logo_banner.startsWith('http') ? optimizeImageUrl(school.logo_banner, 1200) : `${baseUrl}${school.logo_banner}`)
+          ? school.logo_banner.startsWith("http")
+            ? optimizeImageUrl(school.logo_banner, 1200)
+            : `${baseUrl}${school.logo_banner}`
           : `${baseUrl}/images/Logo.png`;
 
         return {

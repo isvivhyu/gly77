@@ -117,10 +117,10 @@ const getCachedCities = cache(
           const latestUpdate =
             schools && schools.length > 0
               ? schools
-                .map((s) => s.updated_at)
-                .filter((date): date is string => !!date)
-                .sort()
-                .reverse()[0]
+                  .map((s) => s.updated_at)
+                  .filter((date): date is string => !!date)
+                  .sort()
+                  .reverse()[0]
               : undefined;
 
           return {

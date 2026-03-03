@@ -51,7 +51,10 @@ export default function DirectoryLoading() {
             <div className="w-16 h-16 rounded-full border-4 border-[#774BE5]/20 border-t-[#774BE5] animate-spin" />
             <div
               className="absolute inset-0 w-16 h-16 rounded-full border-4 border-transparent border-b-[#9B6EF3]/50 animate-spin"
-              style={{ animationDirection: "reverse", animationDuration: "0.8s" }}
+              style={{
+                animationDirection: "reverse",
+                animationDuration: "0.8s",
+              }}
             />
           </div>
           <p className="text-[#774BE5] font-medium text-lg mt-4 animate-pulse">

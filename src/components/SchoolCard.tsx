@@ -46,9 +46,7 @@ const SchoolCard = ({
           </div>
         </span>
       </div>
-      <h4 className="text-black text-[24px] font-bold">
-        {schoolName}
-      </h4>
+      <h4 className="text-black text-[24px] font-bold">{schoolName}</h4>
       <div className="flex items-center gap-2 mt-5">
         <i className="ri-map-pin-line text-[#374151] text-[16px]"></i>
         <p className="text-[16px] font-medium text-[#374151]">{location}</p>

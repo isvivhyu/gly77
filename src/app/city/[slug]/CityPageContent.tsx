@@ -42,7 +42,9 @@ export default function CityPageContent({
 
   // Search and filter state
   const [localSearchQuery, setLocalSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<"all" | "budget" | "curriculum">("all");
+  const [activeCategory, setActiveCategory] = useState<
+    "all" | "budget" | "curriculum"
+  >("all");
   const [budgetFilter, setBudgetFilter] = useState("");
   const [curriculumFilter, setCurriculumFilter] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -63,8 +65,16 @@ export default function CityPageContent({
   // Categories (without city since we're already on a city page)
   const categories = [
     { id: "all" as const, label: "All Schools", icon: "ri-apps-line" },
-    { id: "budget" as const, label: "Budget", icon: "ri-money-dollar-circle-line" },
-    { id: "curriculum" as const, label: "Curriculum", icon: "ri-book-open-line" },
+    {
+      id: "budget" as const,
+      label: "Budget",
+      icon: "ri-money-dollar-circle-line",
+    },
+    {
+      id: "curriculum" as const,
+      label: "Curriculum",
+      icon: "ri-book-open-line",
+    },
   ];
 
   const [budgetOptions, setBudgetOptions] = useState([
@@ -133,7 +143,7 @@ export default function CityPageContent({
       filtered = filtered.filter(
         (school) =>
           school.school.toLowerCase().includes(query) ||
-          school.curriculum_tags?.toLowerCase().includes(query)
+          school.curriculum_tags?.toLowerCase().includes(query),
       );
     }
 
@@ -151,10 +161,10 @@ export default function CityPageContent({
       if (range) {
         filtered = filtered.filter((school) => {
           const minPrice = parseFloat(
-            school.min_tuition?.replace(/[^\d.]/g, "") || "0"
+            school.min_tuition?.replace(/[^\d.]/g, "") || "0",
           );
           const maxPrice = parseFloat(
-            school.max_tuition?.replace(/[^\d.]/g, "") || "0"
+            school.max_tuition?.replace(/[^\d.]/g, "") || "0",
           );
           return (
             (minPrice >= range.min && minPrice <= range.max) ||
@@ -167,7 +177,9 @@ export default function CityPageContent({
     // Curriculum filter
     if (curriculumFilter) {
       filtered = filtered.filter((school) =>
-        school.curriculum_tags?.toLowerCase().includes(curriculumFilter.toLowerCase())
+        school.curriculum_tags
+          ?.toLowerCase()
+          .includes(curriculumFilter.toLowerCase()),
       );
     }
 
@@ -175,11 +187,17 @@ export default function CityPageContent({
     setDisplayedSchools(filtered.slice(0, schoolsPerPage));
     setHasMore(filtered.length > schoolsPerPage);
     setCurrentPage(1);
-  }, [schools, localSearchQuery, activeCategory, budgetFilter, curriculumFilter]);
+  }, [
+    schools,
+    localSearchQuery,
+    activeCategory,
+    budgetFilter,
+    curriculumFilter,
+  ]);
 
   // Filter curriculums based on search
   const filteredCurriculums = availableCurriculums.filter((curr) =>
-    curr.label.toLowerCase().includes(localSearchQuery.toLowerCase())
+    curr.label.toLowerCase().includes(localSearchQuery.toLowerCase()),
   );
 
   // Filter budget options (show all)
@@ -226,10 +244,10 @@ export default function CityPageContent({
           const range = budgetRanges[opt.value];
           const count = citySchools.filter((school) => {
             const minPrice = parseFloat(
-              school.min_tuition?.replace(/[^\d.]/g, "") || "0"
+              school.min_tuition?.replace(/[^\d.]/g, "") || "0",
             );
             const maxPrice = parseFloat(
-              school.max_tuition?.replace(/[^\d.]/g, "") || "0"
+              school.max_tuition?.replace(/[^\d.]/g, "") || "0",
             );
             return (
               (minPrice >= range.min && minPrice <= range.max) ||
@@ -255,14 +273,16 @@ export default function CityPageContent({
         setAvailableCurriculums(
           Object.entries(curriculumCounts)
             .map(([label, count]) => ({ label, count }))
-            .sort((a, b) => b.count - a.count)
+            .sort((a, b) => b.count - a.count),
         );
 
         // Load other cities for internal linking
         const allCities = await SchoolService.searchCities("");
         const otherCityData = allCities
           .filter(
-            (c) => c.city.toLowerCase() !== cityName.toLowerCase() && c.schoolCount > 0
+            (c) =>
+              c.city.toLowerCase() !== cityName.toLowerCase() &&
+              c.schoolCount > 0,
           )
           .slice(0, 12)
           .map((c) => ({
@@ -298,7 +318,7 @@ export default function CityPageContent({
     const currentLength = displayedSchools.length;
     const nextSchools = filteredSchools.slice(
       currentLength,
-      currentLength + schoolsPerPage
+      currentLength + schoolsPerPage,
     );
 
     setTimeout(() => {
@@ -313,11 +333,16 @@ export default function CityPageContent({
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoadingMore && !loading) {
+        if (
+          entries[0].isIntersecting &&
+          hasMore &&
+          !isLoadingMore &&
+          !loading
+        ) {
           loadMore();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (observerRef.current) {
@@ -403,7 +428,8 @@ export default function CityPageContent({
                   type="text"
                   value={
                     activeCategory === "budget"
-                      ? budgetOptions.find((b) => b.value === budgetFilter)?.label || ""
+                      ? budgetOptions.find((b) => b.value === budgetFilter)
+                          ?.label || ""
                       : activeCategory === "curriculum"
                         ? curriculumFilter || localSearchQuery
                         : localSearchQuery
@@ -443,7 +469,8 @@ export default function CityPageContent({
                         e.stopPropagation();
                         setLocalSearchQuery("");
                         if (activeCategory === "budget") setBudgetFilter("");
-                        if (activeCategory === "curriculum") setCurriculumFilter("");
+                        if (activeCategory === "curriculum")
+                          setCurriculumFilter("");
                       }}
                       className="text-[#0E1C29]/40 hover:text-[#0E1C29]/60 transition-colors mr-2"
                     >
@@ -472,14 +499,18 @@ export default function CityPageContent({
                           <button
                             key={budgetOption.key}
                             type="button"
-                            onClick={() => handleOptionSelect(budgetOption.value)}
+                            onClick={() =>
+                              handleOptionSelect(budgetOption.value)
+                            }
                             className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${
                               budgetFilter === budgetOption.value
                                 ? "bg-[#774BE5]/10 text-[#774BE5]"
                                 : "text-[#0E1C29]"
                             }`}
                           >
-                            <span className="font-medium">{budgetOption.label}</span>
+                            <span className="font-medium">
+                              {budgetOption.label}
+                            </span>
                             <span className="text-sm text-gray-500">
                               {budgetOption.count} school
                               {budgetOption.count !== 1 ? "s" : ""}
@@ -495,14 +526,18 @@ export default function CityPageContent({
                             <button
                               key={curriculum.label}
                               type="button"
-                              onClick={() => handleOptionSelect(curriculum.label)}
+                              onClick={() =>
+                                handleOptionSelect(curriculum.label)
+                              }
                               className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${
                                 curriculumFilter === curriculum.label
                                   ? "bg-[#774BE5]/10 text-[#774BE5]"
                                   : "text-[#0E1C29]"
                               }`}
                             >
-                              <span className="font-medium">{curriculum.label}</span>
+                              <span className="font-medium">
+                                {curriculum.label}
+                              </span>
                               <span className="text-sm text-gray-500">
                                 {curriculum.count} school
                                 {curriculum.count !== 1 ? "s" : ""}
@@ -512,7 +547,8 @@ export default function CityPageContent({
                         ) : filteredCurriculums.length === 0 &&
                           availableCurriculums.length > 0 ? (
                           <div className="px-4 py-3 text-gray-500 text-center">
-                            No curriculum options found matching &quot;{localSearchQuery}&quot;
+                            No curriculum options found matching &quot;
+                            {localSearchQuery}&quot;
                           </div>
                         ) : (
                           <div className="px-4 py-3 text-gray-500 text-center">
@@ -539,7 +575,10 @@ export default function CityPageContent({
                 <div className="flex items-center gap-2 bg-[#774BE5]/10 text-[#774BE5] px-3 py-2 rounded-full text-[14px] font-medium">
                   <i className="ri-money-dollar-circle-line"></i>
                   <span>
-                    {budgetOptions.find((opt) => opt.value === budgetFilter)?.label}
+                    {
+                      budgetOptions.find((opt) => opt.value === budgetFilter)
+                        ?.label
+                    }
                   </span>
                   <button
                     onClick={() => setBudgetFilter("")}
@@ -621,7 +660,10 @@ export default function CityPageContent({
               <div className="w-16 h-16 rounded-full border-4 border-[#774BE5]/20 border-t-[#774BE5] animate-spin" />
               <div
                 className="absolute inset-0 w-16 h-16 rounded-full border-4 border-transparent border-b-[#9B6EF3]/50 animate-spin"
-                style={{ animationDirection: "reverse", animationDuration: "0.8s" }}
+                style={{
+                  animationDirection: "reverse",
+                  animationDuration: "0.8s",
+                }}
               />
             </div>
             <p className="text-[#774BE5] font-medium text-[18px] mt-4 animate-pulse">
@@ -670,7 +712,10 @@ export default function CityPageContent({
                   imageAlt={school.school}
                   schoolName={school.school}
                   location={school.city}
-                  tags={school.curriculum_tags?.split(", ").map((t) => t.trim()) || []}
+                  tags={
+                    school.curriculum_tags?.split(", ").map((t) => t.trim()) ||
+                    []
+                  }
                   priceRange={`${school.min_tuition} - ${school.max_tuition}${
                     school.min_tuition?.toLowerCase().includes("/month") ||
                     school.max_tuition?.toLowerCase().includes("/month")

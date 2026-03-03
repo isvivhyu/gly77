@@ -19,8 +19,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
-
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aralya.com";
 
 export const metadata: Metadata = {
@@ -103,7 +101,6 @@ export default function RootLayout({
           <PageLoadingIndicator />
         </Suspense>
         {children}
-
       </body>
     </html>
   );

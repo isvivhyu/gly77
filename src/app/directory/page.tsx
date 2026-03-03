@@ -30,7 +30,7 @@ const isSchoolInCity = (school: School, targetCity: string): boolean => {
     .map((city: string) => city.trim().toLowerCase());
 
   return cities.some((city: string) =>
-    SchoolService.citiesMatch(normalizedTargetCity, city)
+    SchoolService.citiesMatch(normalizedTargetCity, city),
   );
 };
 
@@ -57,7 +57,9 @@ const SchoolDirectoryContent = () => {
   const [availableCities, setAvailableCities] = useState<
     { city: string; schoolCount: number }[]
   >([]);
-  const [availableCurriculums, setAvailableCurriculums] = useState<{ label: string; count: number }[]>([]);
+  const [availableCurriculums, setAvailableCurriculums] = useState<
+    { label: string; count: number }[]
+  >([]);
   const [isSearching, setIsSearching] = useState(false);
   const [isFiltering, setIsFiltering] = useState(false);
   const [activeCategory, setActiveCategory] = useState<
@@ -154,7 +156,7 @@ const SchoolDirectoryContent = () => {
   // Helper function to filter schools by budget amount
   const filterByBudgetAmount = (
     schools: School[],
-    budgetAmount: number
+    budgetAmount: number,
   ): School[] => {
     return schools.filter((school) => {
       try {
@@ -261,7 +263,7 @@ const SchoolDirectoryContent = () => {
       "Rendering mobile filters, activeFilter:",
       activeFilter,
       "isMobile:",
-      isMobile
+      isMobile,
     );
   }, [activeFilter, isMobile]);
 
@@ -280,8 +282,8 @@ const SchoolDirectoryContent = () => {
         const curriculumCounts: Record<string, number> = {};
         schools.forEach((school) => {
           if (school.curriculum_tags) {
-            const tags = school.curriculum_tags.split(",").map(t => t.trim());
-            tags.forEach(tag => {
+            const tags = school.curriculum_tags.split(",").map((t) => t.trim());
+            tags.forEach((tag) => {
               if (tag) {
                 curriculumCounts[tag] = (curriculumCounts[tag] || 0) + 1;
               }
@@ -324,8 +326,12 @@ const SchoolDirectoryContent = () => {
               return;
             }
 
-            const minPrice = parseFloat(school.min_tuition.replace(/[^\d.]/g, ""));
-            const maxPrice = parseFloat(school.max_tuition.replace(/[^\d.]/g, ""));
+            const minPrice = parseFloat(
+              school.min_tuition.replace(/[^\d.]/g, ""),
+            );
+            const maxPrice = parseFloat(
+              school.max_tuition.replace(/[^\d.]/g, ""),
+            );
 
             // Check which ranges this school falls into
             Object.entries(budgetRanges).forEach(([key, range]) => {
@@ -344,11 +350,12 @@ const SchoolDirectoryContent = () => {
         });
 
         // Update budget options with counts
-        setBudgetOptions(prev => prev.map(opt => ({
-          ...opt,
-          count: budgetCounts[opt.value as keyof typeof budgetCounts] || 0
-        })));
-
+        setBudgetOptions((prev) =>
+          prev.map((opt) => ({
+            ...opt,
+            count: budgetCounts[opt.value as keyof typeof budgetCounts] || 0,
+          })),
+        );
       } catch (error) {
         console.error("Error loading data:", error);
         setAvailableCities([]);
@@ -414,7 +421,7 @@ const SchoolDirectoryContent = () => {
       if (!target.closest(".filter-dropdown")) {
         console.log(
           "Desktop - closing filter, activeFilter was:",
-          activeFilter
+          activeFilter,
         );
         setActiveFilter("all");
       }
@@ -446,10 +453,10 @@ const SchoolDirectoryContent = () => {
         if (range) {
           filtered = filtered.filter((school) => {
             const minPrice = parseFloat(
-              school.min_tuition.replace(/[^\d.]/g, "")
+              school.min_tuition.replace(/[^\d.]/g, ""),
             );
             const maxPrice = parseFloat(
-              school.max_tuition.replace(/[^\d.]/g, "")
+              school.max_tuition.replace(/[^\d.]/g, ""),
             );
             return (
               (minPrice >= range.min && minPrice <= range.max) ||
@@ -462,7 +469,7 @@ const SchoolDirectoryContent = () => {
       // Apply city filter
       if (cityFilter) {
         filtered = filtered.filter((school) =>
-          isSchoolInCity(school, cityFilter)
+          isSchoolInCity(school, cityFilter),
         );
       }
 
@@ -476,7 +483,7 @@ const SchoolDirectoryContent = () => {
 
       return filtered;
     },
-    [budgetFilter, cityFilter, curriculumFilter]
+    [budgetFilter, cityFilter, curriculumFilter],
   );
 
   // Filter schools based on search query and filters
@@ -556,7 +563,7 @@ const SchoolDirectoryContent = () => {
           loadMoreSchools();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const currentObserverRef = observerRef.current;
@@ -621,10 +628,11 @@ const SchoolDirectoryContent = () => {
                       }
                       setInputFocused(false);
                     }}
-                    className={`px-4 md:px-6 py-2.5 md:py-3 text-[14px] font-semibold flex items-center justify-center gap-2 text-black relative ${activeCategory === category.id
-                      ? "border-b-2 border-black"
-                      : "border-b-2 border-transparent"
-                      } transition-all duration-300 ease-in-out`}
+                    className={`px-4 md:px-6 py-2.5 md:py-3 text-[14px] font-semibold flex items-center justify-center gap-2 text-black relative ${
+                      activeCategory === category.id
+                        ? "border-b-2 border-black"
+                        : "border-b-2 border-transparent"
+                    } transition-all duration-300 ease-in-out`}
                   >
                     <i className={`${category.icon} text-[16px]`}></i>
                     <span>{category.label}</span>
@@ -649,7 +657,7 @@ const SchoolDirectoryContent = () => {
                       ? cityFilter || localSearchQuery
                       : activeCategory === "budget"
                         ? budgetOptions.find((b) => b.value === budgetFilter)
-                          ?.label || ""
+                            ?.label || ""
                         : activeCategory === "curriculum"
                           ? curriculumFilter || localSearchQuery
                           : localSearchQuery
@@ -685,21 +693,21 @@ const SchoolDirectoryContent = () => {
                     (activeCategory === "city" && cityFilter) ||
                     (activeCategory === "budget" && budgetFilter) ||
                     (activeCategory === "curriculum" && curriculumFilter)) && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setLocalSearchQuery("");
-                          if (activeCategory === "city") setCityFilter("");
-                          if (activeCategory === "budget") setBudgetFilter("");
-                          if (activeCategory === "curriculum")
-                            setCurriculumFilter("");
-                        }}
-                        className="text-[#0E1C29]/40 hover:text-[#0E1C29]/60 transition-colors mr-2"
-                      >
-                        <i className="ri-close-line text-xl"></i>
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLocalSearchQuery("");
+                        if (activeCategory === "city") setCityFilter("");
+                        if (activeCategory === "budget") setBudgetFilter("");
+                        if (activeCategory === "curriculum")
+                          setCurriculumFilter("");
+                      }}
+                      className="text-[#0E1C29]/40 hover:text-[#0E1C29]/60 transition-colors mr-2"
+                    >
+                      <i className="ri-close-line text-xl"></i>
+                    </button>
+                  )}
 
                   <ButtonWithLoading
                     type="submit"
@@ -723,7 +731,9 @@ const SchoolDirectoryContent = () => {
                             <button
                               key={cityOption.city}
                               type="button"
-                              onClick={() => handleOptionSelect(cityOption.city)}
+                              onClick={() =>
+                                handleOptionSelect(cityOption.city)
+                              }
                               className="w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between"
                             >
                               <span className="text-[#0E1C29] font-medium">
@@ -738,7 +748,8 @@ const SchoolDirectoryContent = () => {
                         ) : filteredCities.length === 0 &&
                           availableCities.length > 0 ? (
                           <div className="px-4 py-3 text-gray-500 text-center">
-                            No cities found matching &quot;{localSearchQuery}&quot;
+                            No cities found matching &quot;{localSearchQuery}
+                            &quot;
                           </div>
                         ) : (
                           <div className="px-4 py-3 text-gray-500 text-center">
@@ -753,11 +764,14 @@ const SchoolDirectoryContent = () => {
                           <button
                             key={budgetOption.key}
                             type="button"
-                            onClick={() => handleOptionSelect(budgetOption.value)}
-                            className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${budgetFilter === budgetOption.value
-                              ? "bg-[#774BE5]/10 text-[#774BE5]"
-                              : "text-[#0E1C29]"
-                              }`}
+                            onClick={() =>
+                              handleOptionSelect(budgetOption.value)
+                            }
+                            className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${
+                              budgetFilter === budgetOption.value
+                                ? "bg-[#774BE5]/10 text-[#774BE5]"
+                                : "text-[#0E1C29]"
+                            }`}
                           >
                             <span className="font-medium">
                               {budgetOption.label}
@@ -777,13 +791,18 @@ const SchoolDirectoryContent = () => {
                             <button
                               key={curriculum.label}
                               type="button"
-                              onClick={() => handleOptionSelect(curriculum.label)}
-                              className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${curriculumFilter === curriculum.label
-                                ? "bg-[#774BE5]/10 text-[#774BE5]"
-                                : "text-[#0E1C29]"
-                                }`}
+                              onClick={() =>
+                                handleOptionSelect(curriculum.label)
+                              }
+                              className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${
+                                curriculumFilter === curriculum.label
+                                  ? "bg-[#774BE5]/10 text-[#774BE5]"
+                                  : "text-[#0E1C29]"
+                              }`}
                             >
-                              <span className="font-medium">{curriculum.label}</span>
+                              <span className="font-medium">
+                                {curriculum.label}
+                              </span>
                               <span className="text-sm text-gray-500">
                                 {curriculum.count} school
                                 {curriculum.count !== 1 ? "s" : ""}
@@ -914,23 +933,26 @@ const SchoolDirectoryContent = () => {
                 <div className="flex items-center gap-2">
                   <LoadingSpinner size="sm" />
                   <h3 className="text-[18px] font-semibold text-[#0E1C29]">
-                    {initialLoading ? "Loading schools..." : "Filtering schools..."}
+                    {initialLoading
+                      ? "Loading schools..."
+                      : "Filtering schools..."}
                   </h3>
                 </div>
               ) : (
                 <>
                   <h3 className="text-[18px] font-semibold text-[#0E1C29]">
                     {filteredSchools.length > 0
-                      ? `${filteredSchools.length} School${filteredSchools.length !== 1 ? "s" : ""
-                      } Found`
+                      ? `${filteredSchools.length} School${
+                          filteredSchools.length !== 1 ? "s" : ""
+                        } Found`
                       : "This school is not in our database yet. We are adding more schools weekly."}
                   </h3>
                   {(budgetFilter ||
                     cityFilter ||
                     curriculumFilter ||
                     filteredSchools.length > 0) && (
-                      <div className="w-2 h-2 bg-[#774BE5] rounded-full animate-pulse"></div>
-                    )}
+                    <div className="w-2 h-2 bg-[#774BE5] rounded-full animate-pulse"></div>
+                  )}
                 </>
               )}
             </div>
@@ -948,7 +970,10 @@ const SchoolDirectoryContent = () => {
               <div className="w-16 h-16 rounded-full border-4 border-[#774BE5]/20 border-t-[#774BE5] animate-spin" />
               <div
                 className="absolute inset-0 w-16 h-16 rounded-full border-4 border-transparent border-b-[#9B6EF3]/50 animate-spin"
-                style={{ animationDirection: "reverse", animationDuration: "0.8s" }}
+                style={{
+                  animationDirection: "reverse",
+                  animationDuration: "0.8s",
+                }}
               />
             </div>
             <p className="text-[#774BE5] font-medium text-[18px] mt-4 animate-pulse">
@@ -996,8 +1021,8 @@ const SchoolDirectoryContent = () => {
                   imageAlt={school.school}
                   schoolName={school.school}
                   location={school.city}
-                  tags={school.curriculum_tags.split(", ").map(t => t.trim())}
-                  priceRange={`${school.min_tuition} - ${school.max_tuition}${(school.min_tuition?.toLowerCase().includes("/month") || school.max_tuition?.toLowerCase().includes("/month")) ? "" : " / year"}`}
+                  tags={school.curriculum_tags.split(", ").map((t) => t.trim())}
+                  priceRange={`${school.min_tuition} - ${school.max_tuition}${school.min_tuition?.toLowerCase().includes("/month") || school.max_tuition?.toLowerCase().includes("/month") ? "" : " / year"}`}
                   schoolSlug={createSlug(school.school)}
                   priority={index < 6}
                 />
@@ -1051,4 +1076,3 @@ const SchoolDirectory = () => {
 };
 
 export default SchoolDirectory;
-

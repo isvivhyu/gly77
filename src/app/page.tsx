@@ -23,7 +23,9 @@ export default function Home() {
   const [availableCities, setAvailableCities] = useState<
     { city: string; schoolCount: number }[]
   >([]);
-  const [availableCurriculums, setAvailableCurriculums] = useState<{ label: string; count: number }[]>([]);
+  const [availableCurriculums, setAvailableCurriculums] = useState<
+    { label: string; count: number }[]
+  >([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -55,8 +57,8 @@ export default function Home() {
         const curriculumCounts: Record<string, number> = {};
         schools.forEach((school) => {
           if (school.curriculum_tags) {
-            const tags = school.curriculum_tags.split(",").map(t => t.trim());
-            tags.forEach(tag => {
+            const tags = school.curriculum_tags.split(",").map((t) => t.trim());
+            tags.forEach((tag) => {
               if (tag) {
                 curriculumCounts[tag] = (curriculumCounts[tag] || 0) + 1;
               }
@@ -99,8 +101,12 @@ export default function Home() {
               return;
             }
 
-            const minPrice = parseFloat(school.min_tuition.replace(/[^\d.]/g, ""));
-            const maxPrice = parseFloat(school.max_tuition.replace(/[^\d.]/g, ""));
+            const minPrice = parseFloat(
+              school.min_tuition.replace(/[^\d.]/g, ""),
+            );
+            const maxPrice = parseFloat(
+              school.max_tuition.replace(/[^\d.]/g, ""),
+            );
 
             // Check which ranges this school falls into
             Object.entries(budgetRanges).forEach(([key, range]) => {
@@ -119,11 +125,12 @@ export default function Home() {
         });
 
         // Update budget options with counts
-        setBudgetOptions(prev => prev.map(opt => ({
-          ...opt,
-          count: budgetCounts[opt.value as keyof typeof budgetCounts] || 0
-        })));
-
+        setBudgetOptions((prev) =>
+          prev.map((opt) => ({
+            ...opt,
+            count: budgetCounts[opt.value as keyof typeof budgetCounts] || 0,
+          })),
+        );
       } catch (error) {
         console.error("Error loading data:", error);
         setAvailableCities([]);
@@ -351,10 +358,11 @@ export default function Home() {
                       }
                       setInputFocused(false);
                     }}
-                    className={`px-4 md:px-6 py-2.5 md:py-3 text-sm font-semibold flex items-center justify-center gap-2 text-black relative ${activeCategory === category.id
-                      ? "border-b-2 border-black"
-                      : "border-b-2 border-transparent"
-                      } transition-all duration-300 ease-in-out`}
+                    className={`px-4 md:px-6 py-2.5 md:py-3 text-sm font-semibold flex items-center justify-center gap-2 text-black relative ${
+                      activeCategory === category.id
+                        ? "border-b-2 border-black"
+                        : "border-b-2 border-transparent"
+                    } transition-all duration-300 ease-in-out`}
                   >
                     <i className={`${category.icon} text-base`}></i>
                     <span>{category.label}</span>
@@ -379,7 +387,7 @@ export default function Home() {
                       ? cityFilter || searchQuery
                       : activeCategory === "budget"
                         ? budgetOptions.find((b) => b.value === budgetFilter)
-                          ?.label || ""
+                            ?.label || ""
                         : activeCategory === "curriculum"
                           ? curriculumFilter || searchQuery
                           : searchQuery
@@ -415,21 +423,21 @@ export default function Home() {
                     (activeCategory === "city" && cityFilter) ||
                     (activeCategory === "budget" && budgetFilter) ||
                     (activeCategory === "curriculum" && curriculumFilter)) && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSearchQuery("");
-                          if (activeCategory === "city") setCityFilter("");
-                          if (activeCategory === "budget") setBudgetFilter("");
-                          if (activeCategory === "curriculum")
-                            setCurriculumFilter("");
-                        }}
-                        className="text-[#0E1C29]/40 hover:text-[#0E1C29]/60 transition-colors mr-2"
-                      >
-                        <i className="ri-close-line text-xl"></i>
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSearchQuery("");
+                        if (activeCategory === "city") setCityFilter("");
+                        if (activeCategory === "budget") setBudgetFilter("");
+                        if (activeCategory === "curriculum")
+                          setCurriculumFilter("");
+                      }}
+                      className="text-[#0E1C29]/40 hover:text-[#0E1C29]/60 transition-colors mr-2"
+                    >
+                      <i className="ri-close-line text-xl"></i>
+                    </button>
+                  )}
 
                   <ButtonWithLoading
                     type="submit"
@@ -453,7 +461,9 @@ export default function Home() {
                             <button
                               key={cityOption.city}
                               type="button"
-                              onClick={() => handleOptionSelect(cityOption.city)}
+                              onClick={() =>
+                                handleOptionSelect(cityOption.city)
+                              }
                               className="w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between"
                             >
                               <span className="text-[#0E1C29] font-medium">
@@ -483,11 +493,14 @@ export default function Home() {
                           <button
                             key={budgetOption.key}
                             type="button"
-                            onClick={() => handleOptionSelect(budgetOption.value)}
-                            className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${budgetFilter === budgetOption.value
-                              ? "bg-[#774BE5]/10 text-[#774BE5]"
-                              : "text-[#0E1C29]"
-                              }`}
+                            onClick={() =>
+                              handleOptionSelect(budgetOption.value)
+                            }
+                            className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${
+                              budgetFilter === budgetOption.value
+                                ? "bg-[#774BE5]/10 text-[#774BE5]"
+                                : "text-[#0E1C29]"
+                            }`}
                           >
                             <span className="font-medium">
                               {budgetOption.label}
@@ -507,13 +520,18 @@ export default function Home() {
                             <button
                               key={curriculum.label}
                               type="button"
-                              onClick={() => handleOptionSelect(curriculum.label)}
-                              className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${curriculumFilter === curriculum.label
-                                ? "bg-[#774BE5]/10 text-[#774BE5]"
-                                : "text-[#0E1C29]"
-                                }`}
+                              onClick={() =>
+                                handleOptionSelect(curriculum.label)
+                              }
+                              className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${
+                                curriculumFilter === curriculum.label
+                                  ? "bg-[#774BE5]/10 text-[#774BE5]"
+                                  : "text-[#0E1C29]"
+                              }`}
                             >
-                              <span className="font-medium">{curriculum.label}</span>
+                              <span className="font-medium">
+                                {curriculum.label}
+                              </span>
                               <span className="text-sm text-gray-500">
                                 {curriculum.count} school
                                 {curriculum.count !== 1 ? "s" : ""}
@@ -548,7 +566,8 @@ export default function Home() {
         </h2>
         <div className="w-full md:w-[800px] mx-auto">
           <p className="mt-4 text-[#0E1C29] text-sm text-center font-normal">
-            Carefully curated preschool information to help parents choose with confidence.
+            Carefully curated preschool information to help parents choose with
+            confidence.
           </p>
         </div>
         <div className="mt-11 mb-25 flex items-center justify-center w-full">

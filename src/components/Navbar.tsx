@@ -184,4 +184,3 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
 };
 
 export default Navbar;
-

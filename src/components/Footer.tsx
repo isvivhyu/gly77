@@ -55,8 +55,6 @@ const Footer = () => {
         </div>
       </div>
 
-
-
       <div className="w-full border-t border-white mt-8"></div>
 
       <div className="flex items-center justify-between mt-8">

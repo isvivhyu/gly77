@@ -72,21 +72,29 @@ const SchoolDetails = () => {
   // Share functions for desktop (direct platform URLs)
   const shareToFacebook = () => {
     const url = encodeURIComponent(getShareUrl());
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      "_blank",
+    );
   };
 
   const shareToMessenger = () => {
     const url = getShareUrl();
-    navigator.clipboard.writeText(url).then(() => {
-      alert("Link copied! You can now paste it in Messenger.");
-    }).catch(() => {
-      window.open("https://www.messenger.com", "_blank");
-    });
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert("Link copied! You can now paste it in Messenger.");
+      })
+      .catch(() => {
+        window.open("https://www.messenger.com", "_blank");
+      });
   };
 
   const shareToViber = () => {
     const url = encodeURIComponent(getShareUrl());
-    const text = encodeURIComponent(`Check out ${school?.school || "this school"} on Aralya! ${getShareUrl()}`);
+    const text = encodeURIComponent(
+      `Check out ${school?.school || "this school"} on Aralya! ${getShareUrl()}`,
+    );
     window.open(`viber://forward?text=${text}`, "_blank");
     setTimeout(() => {
       if (!document.hasFocus()) {
@@ -205,7 +213,10 @@ const SchoolDetails = () => {
         const oy = style.overflowY;
         const o = style.overflow;
         if (
-          (oy === "auto" || oy === "scroll" || o === "auto" || o === "scroll") &&
+          (oy === "auto" ||
+            oy === "scroll" ||
+            o === "auto" ||
+            o === "scroll") &&
           p.scrollHeight > p.clientHeight
         ) {
           return p;
@@ -244,7 +255,7 @@ const SchoolDetails = () => {
         window.removeEventListener("scroll", onScrollOrResize);
         document.documentElement.removeEventListener(
           "scroll",
-          onScrollOrResize
+          onScrollOrResize,
         );
       } else {
         scrollTarget.removeEventListener("scroll", onScrollOrResize);
@@ -305,12 +316,15 @@ const SchoolDetails = () => {
                   <div className="w-12 h-12 rounded-full border-4 border-[#774BE5]/20 border-t-[#774BE5] animate-spin" />
                   <div
                     className="absolute inset-0 w-12 h-12 rounded-full border-4 border-transparent border-b-[#9B6EF3]/50 animate-spin"
-                    style={{ animationDirection: "reverse", animationDuration: "0.8s" }}
+                    style={{
+                      animationDirection: "reverse",
+                      animationDuration: "0.8s",
+                    }}
                   />
                 </div>
-<p className="text-[#774BE5] font-medium text-[14px] animate-pulse">
-                Loading...
-              </p>
+                <p className="text-[#774BE5] font-medium text-[14px] animate-pulse">
+                  Loading...
+                </p>
               </div>
             </div>
           </div>
@@ -375,7 +389,9 @@ const SchoolDetails = () => {
           <div className="rounded-[16px] bg-[#F6F3FA] p-4 flex md:flex-row flex-col gap-4 md:items-center w-full shadow-sm">
             <div className="w-full md:w-80 md:h-48 border border-gray-200 rounded-[10px] bg-white overflow-hidden flex items-center justify-center">
               <Image
-                src={optimizeImageUrl(school?.logo_banner) || "/images/Logo.png"}
+                src={
+                  optimizeImageUrl(school?.logo_banner) || "/images/Logo.png"
+                }
                 alt={school?.school || "School Logo"}
                 width={400}
                 height={200}
@@ -438,9 +454,11 @@ const SchoolDetails = () => {
                 </div>
               )}
               <p className="text-[#0E1C29] font-bold text-[20px]">
-                {school?.min_tuition || "N/A"} -{" "}
-                {school?.max_tuition || "N/A"}
-                {(school?.min_tuition?.toLowerCase().includes("/month") || school?.max_tuition?.toLowerCase().includes("/month")) ? "" : " / year"}
+                {school?.min_tuition || "N/A"} - {school?.max_tuition || "N/A"}
+                {school?.min_tuition?.toLowerCase().includes("/month") ||
+                school?.max_tuition?.toLowerCase().includes("/month")
+                  ? ""
+                  : " / year"}
               </p>
               {school?.summary && (
                 <p className="text-[15px] font-medium text-[#374151]">
@@ -614,7 +632,8 @@ const SchoolDetails = () => {
               </div>
               <div className="flex flex-col gap-2">
                 <p className="text-[15px] text-[#374151]">
-                  If you notice outdated or incorrect details, message us on Facebook and we'll review it promptly.
+                  If you notice outdated or incorrect details, message us on
+                  Facebook and we'll review it promptly.
                 </p>
                 <Link
                   href="https://web.facebook.com/people/Aralya/61578164295126"
@@ -660,7 +679,10 @@ const SchoolDetails = () => {
               <div className="w-full flex items-stretch gap-4 mb-4">
                 <div className="w-2/5 h-48 flex-shrink-0 bg-gray-200 border border-gray-200 bg-white rounded-lg overflow-hidden flex items-center justify-center">
                   <Image
-                    src={optimizeImageUrl(school?.logo_banner) || "/images/Logo.png"}
+                    src={
+                      optimizeImageUrl(school?.logo_banner) ||
+                      "/images/Logo.png"
+                    }
                     alt={school?.school || "School Logo"}
                     width={400}
                     height={200}
@@ -680,8 +702,14 @@ const SchoolDetails = () => {
                     <div className="flex items-center gap-2">
                       <i className="ri-money-dollar-circle-line"></i>
                       <span>
-                        {school?.min_tuition || "N/A"} - {school?.max_tuition || "N/A"}
-                        {(school?.min_tuition?.toLowerCase().includes("/month") || school?.max_tuition?.toLowerCase().includes("/month")) ? "" : " / year"}
+                        {school?.min_tuition || "N/A"} -{" "}
+                        {school?.max_tuition || "N/A"}
+                        {school?.min_tuition
+                          ?.toLowerCase()
+                          .includes("/month") ||
+                        school?.max_tuition?.toLowerCase().includes("/month")
+                          ? ""
+                          : " / year"}
                       </span>
                     </div>
                     {school?.curriculum && (
@@ -724,7 +752,9 @@ const SchoolDetails = () => {
                     className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
                   >
                     <i className="ri-messenger-fill text-[#0084FF] text-xl"></i>
-                    <span className="font-medium text-[16px] text-[#0E1C29]">Messenger</span>
+                    <span className="font-medium text-[16px] text-[#0E1C29]">
+                      Messenger
+                    </span>
                   </button>
 
                   {/* 3. Viber */}
@@ -733,7 +763,9 @@ const SchoolDetails = () => {
                     className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
                   >
                     <i className="ri-message-3-fill text-[#665CAC] text-xl"></i>
-                    <span className="font-medium text-[16px] text-[#0E1C29]">Viber</span>
+                    <span className="font-medium text-[16px] text-[#0E1C29]">
+                      Viber
+                    </span>
                   </button>
 
                   {/* 4. Facebook */}
@@ -742,7 +774,9 @@ const SchoolDetails = () => {
                     className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
                   >
                     <i className="ri-facebook-fill text-[#1877F2] text-xl"></i>
-                    <span className="font-medium text-[16px] text-[#0E1C29]">Facebook</span>
+                    <span className="font-medium text-[16px] text-[#0E1C29]">
+                      Facebook
+                    </span>
                   </button>
                 </div>
               ) : (
@@ -764,12 +798,16 @@ const SchoolDetails = () => {
                     {linkCopied ? (
                       <>
                         <i className="ri-check-line text-lg"></i>
-                        <span className="font-medium text-[16px] text-[#0E1C29]">Link Copied!</span>
+                        <span className="font-medium text-[16px] text-[#0E1C29]">
+                          Link Copied!
+                        </span>
                       </>
                     ) : (
                       <>
                         <i className="ri-link text-lg"></i>
-                        <span className="font-medium text-[16px] text-[#0E1C29]">Copy Link</span>
+                        <span className="font-medium text-[16px] text-[#0E1C29]">
+                          Copy Link
+                        </span>
                       </>
                     )}
                   </button>

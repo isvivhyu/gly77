@@ -51,13 +51,13 @@ export function getAllCitySlugs(): string[] {
 // Find the original city name from a slug
 export function findCityFromSlug(slug: string): string | null {
   const normalizedSlug = slug.toLowerCase();
-  
+
   for (const city of METRO_MANILA_CITIES) {
     if (cityToSlug(city) === normalizedSlug) {
       return city;
     }
   }
-  
+
   // Fallback: convert slug to display name
   return slugToDisplayName(slug);
 }
