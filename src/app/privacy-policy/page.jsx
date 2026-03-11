@@ -1,7 +1,10 @@
+"use client";
+
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import React from "react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const PrivacyPolicy = () => {
   return (
@@ -12,6 +15,9 @@ const PrivacyPolicy = () => {
         </div>
 
         <div className="pt-13 flex flex-col md:w-[930px]  w-full px-0 md:px-0 mt-20">
+          <div className="mb-6">
+            <Breadcrumbs />
+          </div>
           <h3 className="text-4xl text-[#0E1C29] font-semibold">
             (Privacy Policy)
           </h3>

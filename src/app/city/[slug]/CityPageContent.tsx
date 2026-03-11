@@ -11,6 +11,7 @@ import { School } from "@/lib/supabase";
 import { LoadingSpinner, ButtonWithLoading } from "@/components/LoadingSpinner";
 import { optimizeImageUrl } from "@/lib/cloudinary";
 import { cityToSlug } from "@/lib/cityUtils";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface CityPageContentProps {
   citySlug: string;
@@ -567,6 +568,9 @@ export default function CityPageContent({
 
       {/* Schools Section - Same as Browse Page */}
       <section className="w-full md:px-10 px-5 pb-25 pt-10 bg-white">
+        <div className="mb-6">
+          <Breadcrumbs />
+        </div>
         {/* Active Filter Chips */}
         {(budgetFilter || curriculumFilter) && (
           <div className="mb-4">

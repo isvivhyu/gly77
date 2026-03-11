@@ -46,7 +46,7 @@ const SchoolCard = ({
           </div>
         </span>
       </div>
-      <h4 className="text-black text-[24px] font-bold">{schoolName}</h4>
+      <h4 className="text-black md:text-[24px] text-[20px] font-bold">{schoolName}</h4>
       <div className="flex items-center gap-2 mt-5">
         <i className="ri-map-pin-line text-[#374151] text-[16px]"></i>
         <p className="text-[16px] font-medium text-[#374151]">{location}</p>
@@ -62,7 +62,7 @@ const SchoolCard = ({
         ))}
       </div>
       <div className="flex items-center justify-between mt-auto pt-5">
-        <p className="text-[#0E1C29] font-bold text-[16px] md:text-[20px]">
+        <p className="text-[#0E1C29] font-bold text-[14px] md:text-[20px]">
           {(() => {
             const hasPerYear = priceRange.endsWith(" / year");
             const base = hasPerYear ? priceRange.slice(0, -7) : priceRange;
@@ -74,7 +74,7 @@ const SchoolCard = ({
         </p>
         <Link
           href={schoolSlug ? `/directory/${schoolSlug}` : "/directory"}
-          className="bg-[#774BE5] w-fit text-white p-4 rounded-full text-[14px] font-semibold flex items-center h-11.5"
+          className="bg-[#774BE5] w-fit text-white p-4 rounded-full md:text-[14px] text-[12px] font-semibold flex items-center h-11.5"
         >
           View Info
         </Link>

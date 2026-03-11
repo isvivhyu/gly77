@@ -3,6 +3,7 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import FAQSection from "@/components/FAQSection";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const QAndA = () => {
   return (
@@ -13,6 +14,9 @@ const QAndA = () => {
         </div>
 
         <div className="pt-13 flex flex-col items-center md:w-[930px]  w-full px-0 md:px-0 mt-20">
+          <div className="w-full mb-6">
+            <Breadcrumbs />
+          </div>
           <h3 className="md:text-[56px] text-4xl text-[#0E1C29] text-center">
             Q&A
           </h3>

@@ -44,10 +44,10 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
 
   return (
     <div
-      className={` fixed md:top-0 top-5 md:left-0 left-0 right-0 z-[50000] md:px-0 md:py-0 px-5`}
+      className={` fixed md:top-0 top-2 md:left-0 left-0 right-0 z-[50000] md:px-0 md:py-0 px-3`}
     >
       <div
-        className={`transition-all duration-500 ease-in-out md:px-10 px-5 py-5 ${
+        className={`transition-all duration-500 ease-in-out md:px-10 md:py-5 px-3 py-2.5 ${
           isScrolling && isDesktop
             ? "bg-[#774BE5] md:w-[780px] w-full rounded-2xl mt-5 mx-auto md:top-10 z-[50000]"
             : "w-full md:bg-white/5 md:py-5 bg-[#774BE5] rounded-lg md:rounded-none"
@@ -80,18 +80,18 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
               />
             )}
           </Link>
-          <Link href="/" className="flex items-center gap-2 md:hidden">
+          <Link href="/" className="flex items-center gap-1.5 md:hidden">
             <Image
               src="/images/logo-icons.png"
               alt="logo"
-              width={45}
-              height={45}
+              width={32}
+              height={32}
             />
             <Image
               src="/images/logo-white.png"
               alt="logo"
-              width={200}
-              height={200}
+              width={120}
+              height={120}
             />
           </Link>
 
@@ -129,23 +129,23 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
 
           <button
             onClick={toggleMenu}
-            className="block md:hidden focus:outline-none"
+            className="block md:hidden focus:outline-none p-1 -mr-1"
             aria-label="Toggle menu"
           >
-            <div className="w-8 h-8 flex flex-col justify-center items-center relative">
+            <div className="w-6 h-6 flex flex-col justify-center items-center relative">
               <div
-                className={`w-8 h-0.5 bg-white transition-all duration-300 ease-in-out absolute ${
-                  isMenuOpen ? "rotate-45" : "rotate-0 -translate-y-2"
+                className={`w-6 h-0.5 bg-white transition-all duration-300 ease-in-out absolute ${
+                  isMenuOpen ? "rotate-45" : "rotate-0 -translate-y-1.5"
                 }`}
               ></div>
               <div
-                className={`w-8 h-0.5 bg-white transition-all duration-300 ease-in-out ${
+                className={`w-6 h-0.5 bg-white transition-all duration-300 ease-in-out ${
                   isMenuOpen ? "opacity-0" : "opacity-100"
                 }`}
               ></div>
               <div
-                className={`w-8 h-0.5 bg-white transition-all duration-300 ease-in-out absolute ${
-                  isMenuOpen ? "-rotate-45" : "rotate-0 translate-y-2"
+                className={`w-6 h-0.5 bg-white transition-all duration-300 ease-in-out absolute ${
+                  isMenuOpen ? "-rotate-45" : "rotate-0 translate-y-1.5"
                 }`}
               ></div>
             </div>
@@ -158,8 +158,8 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
             isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="px-5 my-12">
-            <ul className="flex flex-col gap-10 font-bold text-lg w-full">
+          <div className="px-3 py-6">
+            <ul className="flex flex-col gap-6 font-bold text-base w-full">
               <li className="text-white hover:text-[#0E1C29] transition-colors duration-500 ease-in-out delay-100">
                 <Link href="/" onClick={() => setIsMenuOpen(false)}>
                   Home

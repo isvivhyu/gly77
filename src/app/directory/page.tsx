@@ -16,6 +16,7 @@ import { useSearchParams } from "next/navigation";
 import { LoadingSpinner, ButtonWithLoading } from "@/components/LoadingSpinner";
 import { optimizeImageUrl } from "@/lib/cloudinary";
 import { cityToSlug } from "@/lib/cityUtils";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 // Helper function to check if a school is in a specific city
 // Uses the same matching logic as SchoolService for consistency
@@ -831,6 +832,9 @@ const SchoolDirectoryContent = () => {
       </section>
 
       <section className="w-full md:px-10 px-5 pb-25 pt-10 bg-white">
+        <div className="mb-6">
+          <Breadcrumbs />
+        </div>
         {(searchQuery || cityQuery) && (
           <div className="mb-6">
             <h2 className="text-[18px] font-semibold text-[#0E1C29] mb-2">

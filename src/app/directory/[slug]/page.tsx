@@ -8,6 +8,7 @@ import { School } from "@/lib/supabase";
 import { useParams } from "next/navigation";
 import { SkeletonLoader } from "@/components/SkeletonLoader";
 import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { optimizeImageUrl } from "@/lib/cloudinary";
 
 const SchoolDetails = () => {
@@ -370,24 +371,13 @@ const SchoolDetails = () => {
 
         {/* Main Content */}
         <div className="pt-13 flex flex-col items-center md:max-w-[1000px] w-full px-0 mt-14">
-          {/* Back to Browse Button */}
-          <div className="w-full mb-4 relative flex items-center min-h-10">
-            <Link
-              href="/directory"
-              className="w-full flex items-center relative"
-            >
-              <div className="w-10 h-10 rounded-full bg-[#774BE5] text-white flex items-center justify-center hover:bg-[#6B3FD6] transition-colors shrink-0">
-                <i className="ri-arrow-left-line text-lg"></i>
-              </div>
-              <span className="absolute left-1/2 -translate-x-1/2 text-[#774BE5] font-semibold text-[14px]">
-                Back to Browse
-              </span>
-            </Link>
+          <div className="w-full mb-4">
+            <Breadcrumbs currentLabel={school?.school} />
           </div>
 
           {/* Header */}
           <div className="rounded-[16px] bg-[#F6F3FA] p-4 flex md:flex-row flex-col gap-4 md:items-center w-full shadow-sm">
-            <div className="w-full md:w-80 md:h-48 border border-gray-200 rounded-[10px] bg-white overflow-hidden flex items-center justify-center">
+            <div className="relative w-full md:w-80 md:h-48 border border-gray-200 rounded-[10px] bg-white overflow-hidden flex items-center justify-center">
               <Image
                 src={
                   optimizeImageUrl(school?.logo_banner) || "/images/Logo.png"
@@ -397,20 +387,20 @@ const SchoolDetails = () => {
                 height={200}
                 className="max-w-full max-h-full object-contain"
               />
+              <span className="absolute bottom-2 right-2 group inline-flex">
+                <i className="ri-verified-badge-fill text-[#774BE5] text-xl cursor-pointer drop-shadow-sm"></i>
+                <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[14px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                  Verified by Aralya
+                  <div className="absolute top-full right-4 -mt-1">
+                    <div className="border-4 border-transparent border-t-[#774BE5]"></div>
+                  </div>
+                </div>
+              </span>
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <h4 className="text-[#0E1C29] text-[24px] font-semibold">
-                  <span>{school?.school || "School Name"}</span>
-                  <span className="relative group inline-block ml-1 -mt-1 align-middle">
-                    <i className="ri-verified-badge-fill text-[#774BE5] text-xl cursor-pointer"></i>
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[14px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                      Verified by Aralya
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-                        <div className="border-4 border-transparent border-t-[#774BE5]"></div>
-                      </div>
-                    </div>
-                  </span>
+                  {school?.school || "School Name"}
                 </h4>
 
                 <div
