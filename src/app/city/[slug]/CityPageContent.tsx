@@ -49,7 +49,7 @@ export default function CityPageContent({
   const [availableCurriculums, setAvailableCurriculums] = useState<
     { label: string; count: number }[]
   >([]);
-  const [priceBuckets, setPriceBuckets] = useState<number[]>([]);
+
   const [otherCities, setOtherCities] = useState<
     { city: string; slug: string; count: number }[]
   >([]);
@@ -187,21 +187,6 @@ export default function CityPageContent({
         setMaxSchoolPrice(rounded);
         setPriceRange({ min: 0, max: rounded });
 
-        // Build price histogram buckets (30 bars)
-        const NUM_BUCKETS = 30;
-        const bucketSize = rounded / NUM_BUCKETS;
-        const buckets = Array(NUM_BUCKETS).fill(0);
-        citySchools.forEach((school) => {
-          const min = parseFloat(school.min_tuition?.replace(/[^\d.]/g, "") || "0");
-          const max = parseFloat(school.max_tuition?.replace(/[^\d.]/g, "") || "0") || min;
-          // Mark every bucket the school's price range touches
-          const startBucket = Math.floor(min / bucketSize);
-          const endBucket = Math.min(Math.floor(max / bucketSize), NUM_BUCKETS - 1);
-          for (let i = startBucket; i <= endBucket; i++) {
-            buckets[i]++;
-          }
-        });
-        setPriceBuckets(buckets);
 
         // Extract curriculums from schools
         const curriculumCounts: Record<string, number> = {};
@@ -359,7 +344,7 @@ export default function CityPageContent({
                     }}
                     className="ml-1 hover:opacity-70 transition-opacity"
                   >
-                    <i className="ri-close-line text-[13px]"></i>
+                    <i className="ri-close-line text-[14px]"></i>
                   </button>
                 ) : (
                   <i
@@ -378,7 +363,7 @@ export default function CityPageContent({
                       value={curriculumSearch}
                       onChange={(e) => setCurriculumSearch(e.target.value)}
                       placeholder="Search curriculum..."
-                      className="w-full px-3 py-1.5 text-[13px] bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-[#774BE5] placeholder-gray-400"
+                      className="w-full px-3 py-2 text-[16px] bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-[#774BE5] placeholder-gray-400"
                       autoFocus
                     />
                   </div>
@@ -392,7 +377,7 @@ export default function CityPageContent({
                             setShowCurriculumDropdown(false);
                             setCurriculumSearch("");
                           }}
-                          className={`w-full px-4 py-2.5 text-left text-[13px] flex items-center justify-between hover:bg-[#774BE5]/5 transition-colors ${
+                          className={`w-full px-4 py-2.5 text-left text-[14px] flex items-center justify-between hover:bg-[#774BE5]/5 transition-colors ${
                             curriculumFilter === curr.label
                               ? "text-[#774BE5] font-semibold bg-[#774BE5]/5"
                               : "text-[#0E1C29]"
@@ -405,7 +390,7 @@ export default function CityPageContent({
                         </button>
                       ))
                     ) : (
-                      <div className="px-4 py-3 text-[13px] text-gray-400 text-center">
+                      <div className="px-4 py-3 text-[14px] text-gray-400 text-center">
                         No results found
                       </div>
                     )}
@@ -426,38 +411,11 @@ export default function CityPageContent({
                     Price
                   </span>
                 </div>
-                <span className="text-[13px] font-semibold text-[#774BE5]">
+                <span className="text-[14px] font-semibold text-[#774BE5]">
                   ₱{priceRange.min.toLocaleString()} –{" "}
                   ₱{priceRange.max.toLocaleString()}
                 </span>
               </div>
-
-              {/* Histogram bars */}
-              {priceBuckets.length > 0 && (
-                <div className="flex items-end gap-px h-10 w-full mb-1">
-                  {priceBuckets.map((count, i) => {
-                    const bucketStart = (i / priceBuckets.length) * maxSchoolPrice;
-                    const bucketEnd = ((i + 1) / priceBuckets.length) * maxSchoolPrice;
-                    const isInRange =
-                      bucketEnd >= priceRange.min && bucketStart <= priceRange.max;
-                    const maxCount = Math.max(...priceBuckets, 1);
-                    const heightPct = count === 0 ? 8 : Math.max(12, (count / maxCount) * 100);
-                    return (
-                      <div
-                        key={i}
-                        className="flex-1 rounded-sm transition-colors duration-150"
-                        style={{
-                          height: `${heightPct}%`,
-                          backgroundColor: isInRange
-                            ? "#774BE5"
-                            : "#D1D5DB",
-                          opacity: count === 0 ? 0.3 : 1,
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              )}
 
               {/* Dual range slider — fully custom drag, no overlapping inputs */}
               <div
@@ -501,7 +459,7 @@ export default function CityPageContent({
                   setCurriculumFilter("");
                   setPriceRange({ min: 0, max: maxSchoolPrice });
                 }}
-                className="flex items-center gap-1.5 px-3 py-2 text-[13px] text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-full transition-colors ml-auto"
+                className="flex items-center gap-1.5 px-3 py-2 text-[14px] text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-full transition-colors ml-auto"
               >
                 <i className="ri-close-line"></i>
                 Clear all
