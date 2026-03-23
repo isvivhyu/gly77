@@ -406,7 +406,6 @@ export default function CityPageContent({
             <div className="flex flex-col gap-2 min-w-60 flex-1 max-w-[340px]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
-                  <i className="ri-money-dollar-circle-line text-[15px] text-gray-400"></i>
                   <span className="text-[14px] font-medium text-[#0E1C29]">
                     Price
                   </span>
@@ -420,7 +419,7 @@ export default function CityPageContent({
               {/* Dual range slider — fully custom drag, no overlapping inputs */}
               <div
                 ref={sliderRef}
-                className="relative flex items-center h-5 cursor-pointer select-none"
+                className="relative flex items-center h-8 cursor-pointer select-none"
                 onMouseDown={handleSliderMouseDown}
                 onTouchStart={handleSliderMouseDown}
               >
@@ -436,19 +435,19 @@ export default function CityPageContent({
                 />
                 {/* Min thumb */}
                 <div
-                  className="absolute w-4 h-4 bg-white border-2 border-[#774BE5] rounded-full shadow-sm pointer-events-none"
-                  style={{ left: `calc(${(priceRange.min / maxSchoolPrice) * 100}% - 8px)`, zIndex: 10 }}
+                  className="absolute w-6 h-6 bg-white border-2 border-[#774BE5] rounded-full shadow-sm pointer-events-none"
+                  style={{ left: `calc(${(priceRange.min / maxSchoolPrice) * 100}% - 12px)`, zIndex: 10 }}
                 />
                 {/* Max thumb */}
                 <div
-                  className="absolute w-4 h-4 bg-white border-2 border-[#774BE5] rounded-full shadow-sm pointer-events-none"
-                  style={{ left: `calc(${(priceRange.max / maxSchoolPrice) * 100}% - 8px)`, zIndex: 10 }}
+                  className="absolute w-6 h-6 bg-white border-2 border-[#774BE5] rounded-full shadow-sm pointer-events-none"
+                  style={{ left: `calc(${(priceRange.max / maxSchoolPrice) * 100}% - 12px)`, zIndex: 10 }}
                 />
               </div>
 
-              <div className="flex justify-between text-[11px] text-gray-400">
+              <div className="flex justify-between text-[13px] text-gray-400">
                 <span>₱0</span>
-                <span>₱{(maxSchoolPrice / 1000).toFixed(0)}k+</span>
+                <span>₱{(maxSchoolPrice / 1000).toFixed(0)}K</span>
               </div>
             </div>
 
