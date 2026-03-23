@@ -445,7 +445,7 @@ export default function CityPageContent({
                 />
               </div>
 
-              <div className="flex justify-between text-[13px] text-gray-400">
+              <div className="flex justify-between text-[15px] text-gray-400">
                 <span>₱0</span>
                 <span>₱{(maxSchoolPrice / 1000).toFixed(0)}K</span>
               </div>
