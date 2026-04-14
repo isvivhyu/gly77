@@ -87,3 +87,12 @@ const cityContentMap: Record<string, CityContent> = {
 export function getCityContent(citySlug: string): CityContent {
   return cityContentMap[citySlug.toLowerCase()] ?? {};
 }
+
+const relatedCitySlugs: Record<string, string[]> = {
+  taguig: ["makati"],
+  makati: ["taguig"],
+};
+
+export function getRelatedCitySlugs(citySlug: string): string[] {
+  return relatedCitySlugs[citySlug.toLowerCase()] ?? [];
+}

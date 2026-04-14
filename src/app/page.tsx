@@ -16,7 +16,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<
     "all" | "city" | "budget" | "curriculum"
-  >("all");
+  >("city");
   const [cityFilter, setCityFilter] = useState("");
   const [budgetFilter, setBudgetFilter] = useState("");
   const [curriculumFilter, setCurriculumFilter] = useState("");
@@ -271,16 +271,7 @@ export default function Home() {
 
   // Get placeholder text based on active category
   const getPlaceholder = () => {
-    switch (activeCategory) {
-      case "city":
-        return "Select or search for a city";
-      case "budget":
-        return "Select your budget range";
-      case "curriculum":
-        return "Select or search for a curriculum";
-      default:
-        return "Search by school name, city, or curriculum…";
-    }
+    return "Select a city";
   };
 
   // Initialize AOS
@@ -292,21 +283,6 @@ export default function Home() {
       offset: 100,
     });
   }, []);
-
-  const categories = [
-    { id: "all" as const, label: "All Schools", icon: "ri-grid-line" },
-    { id: "city" as const, label: "By City", icon: "ri-map-pin-line" },
-    {
-      id: "budget" as const,
-      label: "By Budget",
-      icon: "ri-money-dollar-circle-line",
-    },
-    {
-      id: "curriculum" as const,
-      label: "By Curriculum",
-      icon: "ri-book-open-line",
-    },
-  ];
 
   return (
     <>
@@ -325,235 +301,97 @@ export default function Home() {
           <form
             id="search-form-mobile"
             onSubmit={handleSearch}
-            className="bg-white w-full p-5 rounded-3xl mt-6 relative"
+            className="w-full mt-6 relative z-1001"
           >
-            {/* Category Tabs Section */}
-            <div className="w-full relative z-[999]">
-              <div className="grid grid-cols-2 md:flex md:items-center md:justify-center gap-2 md:gap-3 md:flex-wrap">
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    type="button"
-                    onClick={() => {
-                      setActiveCategory(category.id);
-                      setSearchQuery("");
-                      // Clear the filter for the category being switched to
-                      if (category.id === "city") {
-                        setCityFilter("");
-                      } else if (category.id === "budget") {
-                        setBudgetFilter("");
-                      } else if (category.id === "curriculum") {
-                        setCurriculumFilter("");
-                      } else if (category.id === "all") {
-                        // Clear all filters when switching to "All Schools"
-                        setCityFilter("");
-                        setBudgetFilter("");
-                        setCurriculumFilter("");
-                      }
-                      // Show dropdown immediately for budget, hide for others
-                      if (category.id === "budget") {
-                        setShowDropdown(true);
-                      } else {
-                        setShowDropdown(false);
-                      }
-                      setInputFocused(false);
-                    }}
-                    className={`px-4 md:px-6 py-2.5 md:py-3 text-sm font-semibold flex items-center justify-center gap-2 text-black relative ${
-                      activeCategory === category.id
-                        ? "border-b-2 border-black"
-                        : "border-b-2 border-transparent"
-                    } transition-all duration-300 ease-in-out`}
-                  >
-                    <i className={`${category.icon} text-base`}></i>
-                    <span>{category.label}</span>
-                  </button>
-                ))}
+            <div className="bg-white rounded-2xl p-2 flex items-center gap-2 shadow-xl relative">
+              {/* Map pin icon */}
+              <div className="pl-3 text-[#774BE5] shrink-0">
+                <i className="ri-map-pin-2-fill text-xl"></i>
               </div>
-            </div>
-            <div className="flex flex-col md:flex-row md:mt-6 mt-3 gap-2.5 rounded-2xl relative z-[1001]">
-              <div
-                className="bg-[#f5f5f5] w-full p-2 rounded-full overflow-visible flex items-center justify-between gap-3 relative shadow-sm"
-                onClick={() => {
-                  if (activeCategory === "budget") {
-                    setShowDropdown(true);
-                  }
+
+              {/* Input */}
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={cityFilter || searchQuery}
+                onChange={handleSearchChange}
+                onFocus={() => {
+                  setInputFocused(true);
+                  setShowDropdown(true);
                 }}
+                onBlur={() => {
+                  setTimeout(() => setInputFocused(false), 200);
+                }}
+                placeholder="Select a city"
+                className="bg-transparent flex-1 text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none py-3"
+                style={{ fontSize: "16px" }}
+              />
+
+              {/* Clear button */}
+              {(searchQuery || cityFilter) && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSearchQuery("");
+                    setCityFilter("");
+                  }}
+                  className="text-[#0E1C29]/40 hover:text-[#0E1C29]/60 transition-colors shrink-0"
+                >
+                  <i className="ri-close-line text-xl"></i>
+                </button>
+              )}
+
+              {/* Search button */}
+              <ButtonWithLoading
+                type="submit"
+                isLoading={isSearching}
+                className="bg-[#774BE5] text-white px-7 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#6B3FD6] transition-colors disabled:hover:bg-[#774BE5] shrink-0"
               >
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  value={
-                    activeCategory === "city"
-                      ? cityFilter || searchQuery
-                      : activeCategory === "budget"
-                        ? budgetOptions.find((b) => b.value === budgetFilter)
-                            ?.label || ""
-                        : activeCategory === "curriculum"
-                          ? curriculumFilter || searchQuery
-                          : searchQuery
-                  }
-                  readOnly={activeCategory === "budget"}
-                  onChange={handleSearchChange}
-                  onFocus={() => {
-                    if (activeCategory === "budget") {
-                      setShowDropdown(true);
-                    } else {
-                      setInputFocused(true);
-                      if (activeCategory !== "all") {
-                        setShowDropdown(true);
-                      }
-                    }
-                  }}
-                  onBlur={() => {
-                    // Delay to allow dropdown click to register
-                    setTimeout(() => setInputFocused(false), 200);
-                  }}
-                  placeholder={getPlaceholder()}
-                  className="bg-transparent w-full text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none cursor-pointer pl-6"
-                  style={{ fontSize: "16px" }}
-                  onClick={() => {
-                    if (activeCategory === "budget") {
-                      setShowDropdown(true);
-                    }
-                  }}
-                />
+                <i className="ri-search-line text-base"></i>
+                Search
+              </ButtonWithLoading>
 
-                <div className="flex items-center gap-2">
-                  {(searchQuery ||
-                    (activeCategory === "city" && cityFilter) ||
-                    (activeCategory === "budget" && budgetFilter) ||
-                    (activeCategory === "curriculum" && curriculumFilter)) && (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSearchQuery("");
-                        if (activeCategory === "city") setCityFilter("");
-                        if (activeCategory === "budget") setBudgetFilter("");
-                        if (activeCategory === "curriculum")
-                          setCurriculumFilter("");
-                      }}
-                      className="text-[#0E1C29]/40 hover:text-[#0E1C29]/60 transition-colors mr-2"
-                    >
-                      <i className="ri-close-line text-xl"></i>
-                    </button>
-                  )}
-
-                  <ButtonWithLoading
-                    type="submit"
-                    isLoading={isSearching}
-                    className="bg-[#774BE5] text-white px-8 py-3 rounded-full text-sm font-semibold flex items-center justify-center gap-1 hover:bg-[#6B3FD6] transition-colors disabled:hover:bg-[#774BE5]"
-                  >
-                    Search
-                  </ButtonWithLoading>
-                </div>
-
-                {/* Dropdown Menu */}
-                {showDropdown && activeCategory !== "all" && (
-                  <div
-                    ref={dropdownRef}
-                    className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50"
-                  >
-                    {activeCategory === "city" && (
-                      <div className="py-2">
-                        {filteredCities.length > 0 ? (
-                          filteredCities.map((cityOption) => (
-                            <button
-                              key={cityOption.city}
-                              type="button"
-                              onClick={() =>
-                                handleOptionSelect(cityOption.city)
-                              }
-                              className="w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between"
-                            >
-                              <span className="text-[#0E1C29] font-medium">
-                                {cityOption.city}
-                              </span>
-                              <span className="text-sm text-gray-500">
-                                {cityOption.schoolCount} school
-                                {cityOption.schoolCount !== 1 ? "s" : ""}
-                              </span>
-                            </button>
-                          ))
-                        ) : filteredCities.length === 0 &&
-                          availableCities.length > 0 ? (
-                          <div className="px-4 py-3 text-gray-500 text-center">
-                            No cities found matching &quot;{searchQuery}&quot;
-                          </div>
-                        ) : (
-                          <div className="px-4 py-3 text-gray-500 text-center">
-                            Loading cities...
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    {activeCategory === "budget" && (
-                      <div className="py-2">
-                        {filteredBudgetOptions.map((budgetOption) => (
-                          <button
-                            key={budgetOption.key}
-                            type="button"
-                            onClick={() =>
-                              handleOptionSelect(budgetOption.value)
-                            }
-                            className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${
-                              budgetFilter === budgetOption.value
-                                ? "bg-[#774BE5]/10 text-[#774BE5]"
-                                : "text-[#0E1C29]"
-                            }`}
-                          >
-                            <span className="font-medium">
-                              {budgetOption.label}
+              {/* Dropdown */}
+              {showDropdown && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 max-h-80 overflow-y-auto z-50"
+                >
+                  <div className="py-2">
+                    {filteredCities.length > 0 ? (
+                      filteredCities.map((cityOption) => (
+                        <button
+                          key={cityOption.city}
+                          type="button"
+                          onClick={() => handleOptionSelect(cityOption.city)}
+                          className="w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between"
+                        >
+                          <div className="flex items-center gap-3">
+                            <i className="ri-map-pin-line text-[#774BE5] text-base"></i>
+                            <span className="text-[#0E1C29] font-medium">
+                              {cityOption.city}
                             </span>
-                            <span className="text-sm text-gray-500">
-                              {budgetOption.count} school
-                              {budgetOption.count !== 1 ? "s" : ""}
-                            </span>
-                          </button>
-                        ))}
+                          </div>
+                          <span className="text-sm text-gray-400">
+                            {cityOption.schoolCount} school
+                            {cityOption.schoolCount !== 1 ? "s" : ""}
+                          </span>
+                        </button>
+                      ))
+                    ) : filteredCities.length === 0 &&
+                      availableCities.length > 0 ? (
+                      <div className="px-4 py-3 text-gray-500 text-center text-sm">
+                        No cities found matching &quot;{searchQuery}&quot;
                       </div>
-                    )}
-                    {activeCategory === "curriculum" && (
-                      <div className="py-2">
-                        {filteredCurriculums.length > 0 ? (
-                          filteredCurriculums.map((curriculum) => (
-                            <button
-                              key={curriculum.label}
-                              type="button"
-                              onClick={() =>
-                                handleOptionSelect(curriculum.label)
-                              }
-                              className={`w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between ${
-                                curriculumFilter === curriculum.label
-                                  ? "bg-[#774BE5]/10 text-[#774BE5]"
-                                  : "text-[#0E1C29]"
-                              }`}
-                            >
-                              <span className="font-medium">
-                                {curriculum.label}
-                              </span>
-                              <span className="text-sm text-gray-500">
-                                {curriculum.count} school
-                                {curriculum.count !== 1 ? "s" : ""}
-                              </span>
-                            </button>
-                          ))
-                        ) : filteredCurriculums.length === 0 &&
-                          availableCurriculums.length > 0 ? (
-                          <div className="px-4 py-3 text-gray-500 text-center">
-                            No curriculum options found matching &quot;
-                            {searchQuery}&quot;
-                          </div>
-                        ) : (
-                          <div className="px-4 py-3 text-gray-500 text-center">
-                            Loading curriculum options...
-                          </div>
-                        )}
+                    ) : (
+                      <div className="px-4 py-3 text-gray-500 text-center text-sm">
+                        Loading cities...
                       </div>
                     )}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </form>
         </div>

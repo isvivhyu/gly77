@@ -11,7 +11,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { optimizeImageUrl } from "@/lib/cloudinary";
 import { cityToSlug } from "@/lib/cityUtils";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { getCityContent } from "@/lib/cityContent";
+import { getCityContent, getRelatedCitySlugs } from "@/lib/cityContent";
 
 interface CityPageContentProps {
   citySlug: string;
@@ -32,6 +32,7 @@ export default function CityPageContent({
   cityName,
 }: CityPageContentProps) {
   const cityContent = getCityContent(citySlug);
+  const relatedCitySlugs = getRelatedCitySlugs(citySlug);
 
   const [schools, setSchools] = useState<School[]>([]);
   const [filteredSchools, setFilteredSchools] = useState<School[]>([]);
@@ -170,7 +171,14 @@ export default function CityPageContent({
     const loadSchools = async () => {
       setLoading(true);
       try {
-        const citySchools = await SchoolService.getSchoolsByCity(cityName);
+        const rawSchools = await SchoolService.getSchoolsByCity(cityName);
+        const citySchools = [...rawSchools].sort((a, b) => {
+          const aMin = parseFloat(a.min_tuition?.replace(/[^\d.]/g, "") || "");
+          const bMin = parseFloat(b.min_tuition?.replace(/[^\d.]/g, "") || "");
+          const aVal = isNaN(aMin) ? Infinity : aMin;
+          const bVal = isNaN(bMin) ? Infinity : bMin;
+          return aVal - bVal;
+        });
         setSchools(citySchools);
         setFilteredSchools(citySchools);
         setDisplayedSchools(citySchools.slice(0, schoolsPerPage));
@@ -643,6 +651,59 @@ export default function CityPageContent({
               </div>
             )}
 
+          </div>
+        </section>
+      )}
+
+      {/* Explore Other Cities */}
+      {relatedCitySlugs.length > 0 && (
+        <section className="w-full bg-white border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-5 md:px-10 py-14">
+            <h2 className="text-[22px] font-semibold text-[#0E1C29] mb-6">
+              Explore Preschools in Other Cities
+            </h2>
+            <div className="flex flex-wrap gap-5">
+              {relatedCitySlugs.map((slug) => {
+                const content = getCityContent(slug);
+                const cityData = otherCities.find((c) => c.slug === slug);
+                const displayName = slug.charAt(0).toUpperCase() + slug.slice(1);
+                return (
+                  <a
+                    key={slug}
+                    href={`/preschools-in-${slug}/`}
+                    className="group relative w-full sm:w-72 h-44 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    {content.imageUrl ? (
+                      <img
+                        src={content.imageUrl}
+                        alt={`Preschools in ${displayName}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#774BE5]/10" />
+                    )}
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
+                    {/* Text */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
+                      <div>
+                        <p className="text-white font-semibold text-[17px] leading-tight">
+                          {displayName}
+                        </p>
+                        {cityData && (
+                          <p className="text-white/70 text-[13px] mt-0.5">
+                            {cityData.count} school{cityData.count !== 1 ? "s" : ""}
+                          </p>
+                        )}
+                      </div>
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center shrink-0 group-hover:bg-[#774BE5] transition-colors">
+                        <i className="ri-arrow-right-line text-white text-base"></i>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
           </div>
         </section>
       )}
