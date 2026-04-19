@@ -5,57 +5,10 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: [
-      // Allow major search + social preview bots
-      {
-        userAgent: "Googlebot",
-        allow: "/",
-        disallow: [],
-      },
-      {
-        userAgent: "Googlebot-Image",
-        allow: "/",
-        disallow: [],
-      },
-      {
-        userAgent: "AdsBot-Google",
-        allow: "/",
-        disallow: [],
-      },
-      {
-        userAgent: "bingbot",
-        allow: "/",
-        disallow: [],
-      },
-      {
-        userAgent: "Applebot",
-        allow: "/",
-        disallow: [],
-      },
-      {
-        userAgent: "DuckDuckBot",
-        allow: "/",
-        disallow: [],
-      },
-      {
-        userAgent: "FacebookExternalHit",
-        allow: "/",
-        disallow: [],
-      },
-      {
-        userAgent: "Twitterbot",
-        allow: "/",
-        disallow: [],
-      },
-      {
-        userAgent: "LinkedInBot",
-        allow: "/",
-        disallow: [],
-      },
-      // Everything else: do not crawl
       {
         userAgent: "*",
-        allow: [],
-        disallow: "/",
+        allow: "/",
+        disallow: "/api/",
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
