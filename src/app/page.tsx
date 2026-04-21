@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import HeroSearchBar from "@/components/HeroSearchBar";
 
 export const metadata: Metadata = {
   title: "Find and Compare Preschools in Makati and Taguig | Aralya",
@@ -33,6 +34,9 @@ export default function Home() {
             tuition, curriculum, and key details, so you don&apos;t have to
             message schools one by one.
           </p>
+          <div className="w-full md:w-[600px] mt-6">
+            <HeroSearchBar />
+          </div>
         </div>
       </section>
 
