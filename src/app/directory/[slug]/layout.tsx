@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { supabaseServer } from "@/lib/supabase-server";
 import { optimizeImageUrl } from "@/lib/cloudinary";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aralya.com";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aralya.ph";
 
 // Helper function to create URL-friendly slugs (same as used in the app)
 function createSlug(schoolName: string): string {
