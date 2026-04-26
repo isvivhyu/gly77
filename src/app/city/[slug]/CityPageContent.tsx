@@ -58,7 +58,7 @@ export default function CityPageContent({
     { city: string; slug: string; count: number }[]
   >([]);
 
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const observerRef = useRef<HTMLDivElement>(null);
   const curriculumDropdownRef = useRef<HTMLDivElement>(null);
@@ -315,6 +315,11 @@ export default function CityPageContent({
             {cityContent.shortDescription ??
               `Discover quality preschools and early childhood education centers in ${cityName}. Compare tuition fees, curriculum options, and facilities to find the perfect fit for your child.`}
           </p>
+          {cityContent.lastUpdated && (
+            <p className="text-gray-400 text-[13px] mt-3">
+              {cityContent.lastUpdated}
+            </p>
+          )}
         </div>
       </div>
 
@@ -612,6 +617,32 @@ export default function CityPageContent({
                 </h2>
                 <p className="text-[15px] text-gray-600 leading-relaxed">
                   {cityContent.about}
+                  {citySlug === "makati" && (
+                    <>
+                      {" "}
+                      You can also explore preschool options in{" "}
+                      <a
+                        href="/preschools-in-taguig/"
+                        className="text-[#774BE5] hover:underline"
+                      >
+                        Taguig
+                      </a>{" "}
+                      to compare more schools nearby.
+                    </>
+                  )}
+                  {citySlug === "taguig" && (
+                    <>
+                      {" "}
+                      You can also explore preschool options in{" "}
+                      <a
+                        href="/preschools-in-makati/"
+                        className="text-[#774BE5] hover:underline"
+                      >
+                        Makati
+                      </a>{" "}
+                      to compare more schools nearby.
+                    </>
+                  )}
                 </p>
               </div>
             )}

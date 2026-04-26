@@ -5,6 +5,7 @@ export interface CityFAQ {
 
 export interface CityContent {
   shortDescription?: string;
+  lastUpdated?: string;
   imageUrl?: string;
   about?: string;
   faqs?: CityFAQ[];
@@ -13,7 +14,8 @@ export interface CityContent {
 const cityContentMap: Record<string, CityContent> = {
   makati: {
     shortDescription:
-      "Explore preschools in Makati and compare tuition, curriculum, and key details to find the right school for your child.",
+      "Find and compare preschools in Makati by tuition, curriculum, and key details. Browse preschool options to help you choose the right school for your child.",
+    lastUpdated: "Last updated: April 2026",
     imageUrl:
       "https://res.cloudinary.com/dqr89hfy1/image/upload/v1775722720/Makati_p0rufb.jpg",
     about:
@@ -48,7 +50,8 @@ const cityContentMap: Record<string, CityContent> = {
   },
   taguig: {
     shortDescription:
-      "Explore preschools in Taguig and compare tuition, curriculum, and key details to find the right school for your child.",
+      "Find and compare preschools in Taguig by tuition, curriculum, and key details. Browse preschool options to help you choose the right school for your child.",
+    lastUpdated: "Last updated: April 2026",
     imageUrl:
       "https://res.cloudinary.com/dqr89hfy1/image/upload/v1775722720/BGC_ythgyv.jpg",
     about:

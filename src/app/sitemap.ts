@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { cache } from "react";
 import { supabaseServer } from "@/lib/supabase-server";
 import { School } from "@/lib/supabase";
+import { cityToSlug } from "@/lib/cityUtils";
 
 // Helper function to create URL-friendly slugs (same as used in the app)
 function createSlug(schoolName: string): string {
@@ -143,7 +144,7 @@ const getCachedCities = cache(
 );
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aralya.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aralya.ph";
 
   // Static pages - all URLs with trailing slashes to match next.config.ts
   const staticPages: MetadataRoute.Sitemap = [
@@ -190,10 +191,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // City pages - add major cities with school counts
+  // City pages - use SEO city landing URLs
   const cities = await getCachedCities();
   const cityPages: MetadataRoute.Sitemap = cities.map((cityData) => ({
-    url: `${ensureTrailingSlash(`${baseUrl}/directory`)}?city=${encodeURIComponent(cityData.city)}`,
+    url: ensureTrailingSlash(`${baseUrl}/preschools-in-${cityToSlug(cityData.city)}`),
     lastModified: cityData.updated_at
       ? new Date(cityData.updated_at)
       : new Date(),

@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aralya.com";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aralya.ph";
 
 export const metadata: Metadata = {
   title: "Aralya | Compare Preschools in Metro Manila",

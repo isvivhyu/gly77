@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aralya.com";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aralya.ph";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Aralya",
