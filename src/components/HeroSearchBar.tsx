@@ -91,7 +91,7 @@ export default function HeroSearchBar() {
       onSubmit={handleSearch}
       className="w-full mt-6 relative z-[1001]"
     >
-      <div className="bg-white rounded-2xl p-2 flex items-center gap-2 shadow-xl relative">
+      <div className="bg-white rounded-full p-2 flex items-center gap-2 shadow-xl relative">
         <div className="pl-3 text-[#774BE5] shrink-0">
           <i className="ri-map-pin-2-fill text-xl" />
         </div>
@@ -130,7 +130,7 @@ export default function HeroSearchBar() {
         <ButtonWithLoading
           type="submit"
           isLoading={isSearching}
-          className="bg-[#774BE5] text-white px-4 md:px-7 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-1 md:gap-2 hover:bg-[#6B3FD6] transition-colors disabled:hover:bg-[#774BE5] shrink-0"
+          className="bg-[#774BE5] text-white px-4 md:px-7 py-3 rounded-full text-sm font-semibold flex items-center justify-center gap-1 md:gap-2 hover:bg-[#6B3FD6] transition-colors disabled:hover:bg-[#774BE5] shrink-0"
         >
           <i className="ri-search-line text-base" />
           <span className="hidden sm:inline">Search</span>
