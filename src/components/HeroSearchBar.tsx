@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ButtonWithLoading } from "@/components/LoadingSpinner";
 import { SchoolService } from "@/lib/schoolService";
 import { cityToSlug } from "@/lib/cityUtils";
+import { getCityContent } from "@/lib/cityContent";
 
 export default function HeroSearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -108,7 +109,7 @@ export default function HeroSearchBar() {
             setTimeout(() => setInputFocused(false), 200);
           }}
           placeholder="Select a city"
-          className="bg-transparent flex-1 text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none py-3"
+          className="bg-transparent flex-1 min-w-0 text-base text-[#0E1C29] placeholder-[#999999] focus:outline-none py-3"
           style={{ fontSize: "16px" }}
         />
 
@@ -129,10 +130,10 @@ export default function HeroSearchBar() {
         <ButtonWithLoading
           type="submit"
           isLoading={isSearching}
-          className="bg-[#774BE5] text-white px-7 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#6B3FD6] transition-colors disabled:hover:bg-[#774BE5] shrink-0"
+          className="bg-[#774BE5] text-white px-4 md:px-7 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-1 md:gap-2 hover:bg-[#6B3FD6] transition-colors disabled:hover:bg-[#774BE5] shrink-0"
         >
           <i className="ri-search-line text-base" />
-          Search
+          <span className="hidden sm:inline">Search</span>
         </ButtonWithLoading>
 
         {showDropdown && (
@@ -142,25 +143,38 @@ export default function HeroSearchBar() {
           >
             <div className="py-2">
               {filteredCities.length > 0 ? (
-                filteredCities.map((cityOption) => (
-                  <button
-                    key={cityOption.city}
-                    type="button"
-                    onClick={() => handleOptionSelect(cityOption.city)}
-                    className="w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <i className="ri-map-pin-line text-[#774BE5] text-base" />
-                      <span className="text-[#0E1C29] font-medium">
-                        {cityOption.city}
+                filteredCities.map((cityOption) => {
+                  const citySlug = cityToSlug(cityOption.city);
+                  const cityContent = getCityContent(citySlug);
+
+                  return (
+                    <button
+                      key={cityOption.city}
+                      type="button"
+                      onClick={() => handleOptionSelect(cityOption.city)}
+                      className="w-full px-4 py-3 text-left hover:bg-[#f5f5f5] transition-colors flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-3">
+                        {cityContent?.imageUrl ? (
+                          <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 shadow-sm border border-gray-100">
+                            <img src={cityContent.imageUrl} alt={cityOption.city} className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="w-14 h-14 rounded-lg bg-[#774BE5]/10 flex items-center justify-center shrink-0">
+                            <i className="ri-map-pin-line text-[#774BE5] text-base" />
+                          </div>
+                        )}
+                        <span className="text-[#0E1C29] font-medium">
+                          {cityOption.city}
+                        </span>
+                      </div>
+                      <span className="text-sm text-gray-400">
+                        {cityOption.schoolCount} school
+                        {cityOption.schoolCount !== 1 ? "s" : ""}
                       </span>
-                    </div>
-                    <span className="text-sm text-gray-400">
-                      {cityOption.schoolCount} school
-                      {cityOption.schoolCount !== 1 ? "s" : ""}
-                    </span>
-                  </button>
-                ))
+                    </button>
+                  );
+                })
               ) : availableCities.length > 0 ? (
                 <div className="px-4 py-3 text-gray-500 text-center text-sm">
                   No cities found matching &quot;{searchQuery}&quot;

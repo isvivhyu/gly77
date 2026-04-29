@@ -3,11 +3,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import HeroSearchBar from "@/components/HeroSearchBar";
+import { getCityContent } from "@/lib/cityContent";
 
 export const metadata: Metadata = {
-  title: "Find and Compare Preschools in Makati and Taguig | Aralya",
+  title: "Preschools in Makati & Taguig | Compare Schools | Aralya",
   description:
-    "Aralya helps parents compare preschools in Makati and Taguig by tuition, curriculum, and key details, so you don't have to message schools one by one.",
+    "Compare preschools in Makati and Taguig by tuition, curriculum, and key details. Find the right preschool for your child with Aralya.",
   alternates: {
     canonical: "https://aralya.ph",
   },
@@ -15,8 +16,9 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <>
-      {/* Hero */}
+    <div className="bg-[#774BE5]">
+      <main className="bg-white rounded-b-[40px] md:rounded-b-[36px] overflow-hidden">
+        {/* Hero */}
       <section
         className="relative w-full min-h-[600px] bg-cover bg-center flex flex-col items-center px-5 pb-48"
         style={{ backgroundImage: "url('/images/Hero.jpg')" }}
@@ -51,34 +53,54 @@ export default function Home() {
             curriculum, and explore school profiles in one place.
           </p>
         </div>
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-5 max-w-2xl mx-auto">
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-5 max-w-3xl mx-auto">
           <Link
             href="/preschools-in-makati"
-            className="w-full sm:w-1/2 border border-[#E2E8F0] rounded-2xl p-8 text-center hover:border-[#774BE5] hover:shadow-md transition-all duration-200 group"
+            className="group relative w-full sm:w-1/2 h-64 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
           >
-            <div className="text-[#774BE5] text-3xl mb-3">
-              <i className="ri-map-pin-2-fill" />
+            <img
+              src={getCityContent("makati").imageUrl}
+              alt="Preschools in Makati"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
+              <div>
+                <h3 className="text-white font-semibold text-2xl leading-tight">
+                  Preschools in Makati
+                </h3>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center shrink-0 group-hover:bg-[#774BE5] transition-colors">
+                <i className="ri-arrow-right-line text-white text-lg"></i>
+              </div>
             </div>
-            <h3 className="text-[#0E1C29] text-lg font-semibold group-hover:text-[#774BE5] transition-colors">
-              Preschools in Makati
-            </h3>
           </Link>
           <Link
             href="/preschools-in-taguig"
-            className="w-full sm:w-1/2 border border-[#E2E8F0] rounded-2xl p-8 text-center hover:border-[#774BE5] hover:shadow-md transition-all duration-200 group"
+            className="group relative w-full sm:w-1/2 h-64 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
           >
-            <div className="text-[#774BE5] text-3xl mb-3">
-              <i className="ri-map-pin-2-fill" />
+            <img
+              src={getCityContent("taguig").imageUrl}
+              alt="Preschools in Taguig"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
+              <div>
+                <h3 className="text-white font-semibold text-2xl leading-tight">
+                  Preschools in Taguig
+                </h3>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center shrink-0 group-hover:bg-[#774BE5] transition-colors">
+                <i className="ri-arrow-right-line text-white text-lg"></i>
+              </div>
             </div>
-            <h3 className="text-[#0E1C29] text-lg font-semibold group-hover:text-[#774BE5] transition-colors">
-              Preschools in Taguig
-            </h3>
           </Link>
         </div>
       </section>
 
       {/* Why Parents Use Aralya */}
-      <section className="w-full bg-[#F7F5FF] px-5 md:px-10 py-20">
+      <section className="w-full bg-white px-5 md:px-10 py-20">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-[#0E1C29] md:text-5xl text-3xl font-semibold">
             Why Parents Use Aralya
@@ -110,15 +132,22 @@ export default function Home() {
             Choosing a preschool can be difficult when information is scattered
             across websites and parents have to contact schools one by one just
             to compare options. Aralya is built to make that easier by helping
-            parents compare preschools in Makati and Taguig based on tuition,
-            curriculum, and key details. As Aralya grows, the goal is to make
+            parents compare{" "}
+            <Link href="/preschools-in-makati" className="text-[#774BE5] hover:underline font-semibold">
+              preschools in Makati
+            </Link>{" "}
+            and{" "}
+            <Link href="/preschools-in-taguig" className="text-[#774BE5] hover:underline font-semibold">
+              preschools in Taguig
+            </Link>{" "}
+            based on tuition, curriculum, and key details. As Aralya grows, the goal is to make
             preschool research simpler, clearer, and more useful for families.
           </p>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="w-full bg-[#F7F5FF] px-5 md:px-10 py-20">
+      <section className="w-full bg-white px-5 md:px-10 py-20 pb-24">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-[#0E1C29] md:text-4xl text-2xl font-semibold">
             Start with a City
@@ -143,8 +172,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
-    </>
+    </div>
   );
 }
