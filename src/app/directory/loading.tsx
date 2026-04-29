@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 export default function DirectoryLoading() {
   return (
@@ -63,7 +62,6 @@ export default function DirectoryLoading() {
         </div>
       </section>
 
-      <Footer />
     </>
   );
 }

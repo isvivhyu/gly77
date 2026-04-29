@@ -1,6 +1,5 @@
 "use client";
 
-import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import FAQSection from "@/components/FAQSection";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -55,7 +54,6 @@ const QAndA = () => {
         ]}
       />
 
-      <Footer />
     </>
   );
 };

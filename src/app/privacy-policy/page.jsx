@@ -1,6 +1,5 @@
 "use client";
 
-import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import React from "react";
@@ -123,7 +122,6 @@ const PrivacyPolicy = () => {
           </p>
         </div>
       </section>
-      <Footer />
     </>
   );
 };

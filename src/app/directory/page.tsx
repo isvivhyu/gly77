@@ -1,5 +1,4 @@
 "use client";
-import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import SchoolCard from "@/components/SchoolCard";
 import { SchoolCardSkeleton } from "@/components/SchoolCardSkeleton";
@@ -1047,7 +1046,6 @@ const SchoolDirectoryContent = () => {
         </div>
       </section>
 
-      <Footer />
     </>
   );
 };
@@ -1066,7 +1064,6 @@ const DirectoryLoading = () => (
         ))}
       </div>
     </section>
-    <Footer />
   </>
 );
 

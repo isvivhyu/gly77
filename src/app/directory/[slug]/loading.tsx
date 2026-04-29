@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 /**
  * Loading state for individual school detail pages
@@ -60,7 +59,6 @@ export default function SchoolDetailLoading() {
         </div>
       </section>
 
-      <Footer />
     </>
   );
 }

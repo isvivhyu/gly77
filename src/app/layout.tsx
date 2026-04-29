@@ -7,6 +7,7 @@ import MetaPixel from "@/components/MetaPixel";
 import MicrosoftClarity from "@/components/MicrosoftClarity";
 import PageViewTracker from "@/components/PageViewTracker";
 import PageLoadingIndicator from "@/components/PageLoadingIndicator";
+import Footer from "@/components/Footer";
 import { Suspense } from "react";
 
 const geistSans = Geist({
@@ -100,7 +101,12 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <PageLoadingIndicator />
         </Suspense>
-        {children}
+        <div className="bg-[#774BE5]">
+          <div className="bg-white rounded-b-[40px] md:rounded-b-[36px] overflow-hidden min-h-screen">
+            {children}
+          </div>
+          <Footer />
+        </div>
       </body>
     </html>
   );

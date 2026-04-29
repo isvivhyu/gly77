@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Link from "next/link";
 import HeroSearchBar from "@/components/HeroSearchBar";
 import { getCityContent } from "@/lib/cityContent";
@@ -16,9 +15,8 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="bg-[#774BE5]">
-      <main className="bg-white rounded-b-[40px] md:rounded-b-[36px] overflow-hidden">
-        {/* Hero */}
+    <>
+      {/* Hero */}
       <section
         className="relative w-full min-h-[600px] bg-cover bg-center flex flex-col items-center px-5 pb-48"
         style={{ backgroundImage: "url('/images/Hero.jpg')" }}
@@ -172,9 +170,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-      </main>
-
-      <Footer />
-    </div>
+    </>
   );
 }

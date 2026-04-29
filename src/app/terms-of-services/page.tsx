@@ -1,4 +1,3 @@
-import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import React from "react";
@@ -101,7 +100,6 @@ const TermsOfServices = () => {
           </p>
         </div>
       </section>
-      <Footer />
     </>
   );
 };

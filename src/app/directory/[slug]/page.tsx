@@ -7,7 +7,6 @@ import Link from "next/link";
 import { School } from "@/lib/supabase";
 import { useParams } from "next/navigation";
 import { SkeletonLoader } from "@/components/SkeletonLoader";
-import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { optimizeImageUrl } from "@/lib/cloudinary";
 
@@ -808,7 +807,6 @@ const SchoolDetails = () => {
         </div>
       )}
 
-      <Footer />
     </>
   );
 };

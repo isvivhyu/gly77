@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import CitySchoolCard from "@/components/CitySchoolCard";
 import { SchoolCardSkeleton } from "@/components/SchoolCardSkeleton";
 import { SchoolService } from "@/lib/schoolService";
@@ -739,7 +738,6 @@ export default function CityPageContent({
         </section>
       )}
 
-      <Footer />
     </>
   );
 }

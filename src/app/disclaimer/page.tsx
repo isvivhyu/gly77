@@ -1,4 +1,3 @@
-import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Metadata } from "next";
@@ -85,7 +84,6 @@ const Disclaimer = () => {
           </p>
         </div>
       </section>
-      <Footer />
     </>
   );
 };
