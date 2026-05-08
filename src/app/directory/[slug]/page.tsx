@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +9,15 @@ import { useParams } from "next/navigation";
 import { SkeletonLoader } from "@/components/SkeletonLoader";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { optimizeImageUrl } from "@/lib/cloudinary";
+import { cityToSlug } from "@/lib/cityUtils";
+
+const createSchoolSlug = (name: string): string =>
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .trim();
 
 const SchoolDetails = () => {
   const params = useParams();
@@ -19,24 +28,23 @@ const SchoolDetails = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
-  const contactColumnRef = useRef<HTMLDivElement>(null);
-  const contactStickyRef = useRef<HTMLDivElement>(null);
+  const [isContactSheetOpen, setIsContactSheetOpen] = useState(false);
+  const [similarSchools, setSimilarSchools] = useState<School[]>([]);
 
-  const STICKY_TOP_PX = 96; // match top-24 (navbar clearance)
+  const primaryCity = school?.city?.split(",")[0]?.trim() || "";
+  const cityBreadcrumbLabel = primaryCity ? `Preschools in ${primaryCity}` : undefined;
+  const cityBreadcrumbHref = primaryCity
+    ? `/preschools-in-${cityToSlug(primaryCity)}/`
+    : undefined;
 
-  // Get current page URL for sharing
   const getShareUrl = () => {
-    if (typeof window !== "undefined") {
-      return window.location.href;
-    }
+    if (typeof window !== "undefined") return window.location.href;
     return "";
   };
 
-  // Copy link to clipboard
   const handleCopyLink = async () => {
     try {
-      const url = getShareUrl();
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(getShareUrl());
       setLinkCopied(true);
       setTimeout(() => setLinkCopied(false), 2000);
     } catch (error) {
@@ -44,50 +52,33 @@ const SchoolDetails = () => {
     }
   };
 
-  // Native share for mobile
   const handleNativeShare = async () => {
     const url = getShareUrl();
     const text = `Check out ${school?.school || "this school"} on Aralya! ${school?.city ? `Located in ${school.city}.` : ""} ${url}`;
     const title = `${school?.school || "School"} | Aralya`;
-
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: title,
-          text: text,
-          url: url,
-        });
+        await navigator.share({ title, text, url });
       } catch (error) {
-        // User cancelled or error occurred - silently fail
         if (error instanceof Error && error.name !== "AbortError") {
           console.log("Share failed:", error);
         }
       }
     } else {
-      // Fallback: copy link if native share not available
       handleCopyLink();
     }
   };
 
-  // Share functions for desktop (direct platform URLs)
   const shareToFacebook = () => {
     const url = encodeURIComponent(getShareUrl());
-    window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${url}`,
-      "_blank",
-    );
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
   };
 
   const shareToMessenger = () => {
-    const url = getShareUrl();
     navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        alert("Link copied! You can now paste it in Messenger.");
-      })
-      .catch(() => {
-        window.open("https://www.messenger.com", "_blank");
-      });
+      .writeText(getShareUrl())
+      .then(() => alert("Link copied! You can now paste it in Messenger."))
+      .catch(() => window.open("https://www.messenger.com", "_blank"));
   };
 
   const shareToViber = () => {
@@ -98,715 +89,610 @@ const SchoolDetails = () => {
     window.open(`viber://forward?text=${text}`, "_blank");
     setTimeout(() => {
       if (!document.hasFocus()) {
-        navigator.clipboard.writeText(getShareUrl()).then(() => {
-          alert("Link copied! You can now paste it in Viber.");
-        });
+        navigator.clipboard
+          .writeText(getShareUrl())
+          .then(() => alert("Link copied! You can now paste it in Viber."));
       }
     }, 500);
   };
 
-  // Format date to "Month Year" format
   const formatLastUpdated = (dateString?: string): string => {
-    if (!dateString) {
-      // Fallback to current date if no date provided
-      const now = new Date();
-      return now.toLocaleDateString("en-US", {
-        month: "long",
-        year: "numeric",
-      });
-    }
+    const opts: Intl.DateTimeFormatOptions = { month: "long", year: "numeric" };
+    if (!dateString) return new Date().toLocaleDateString("en-US", opts);
     try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString("en-US", {
-        month: "long",
-        year: "numeric",
-      });
+      return new Date(dateString).toLocaleDateString("en-US", opts);
     } catch {
-      // Fallback to current date if date parsing fails
-      const now = new Date();
-      return now.toLocaleDateString("en-US", {
-        month: "long",
-        year: "numeric",
-      });
+      return new Date().toLocaleDateString("en-US", opts);
     }
   };
 
-  // Detect desktop vs mobile
   useEffect(() => {
-    const checkDesktop = () => {
-      setIsDesktop(window.innerWidth >= 768); // md breakpoint
-    };
-
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
     checkDesktop();
     window.addEventListener("resize", checkDesktop);
     return () => window.removeEventListener("resize", checkDesktop);
   }, []);
 
-  // Load school data from API
   useEffect(() => {
     const loadSchool = async () => {
       try {
         const { apiClient } = await import("@/lib/apiClient");
         const foundSchool = await apiClient.getSchoolBySlug(slug);
         setSchool(foundSchool || null);
+        if (foundSchool?.city) {
+          const city = foundSchool.city.split(",")[0]?.trim();
+          if (city) {
+            const citySchools = await apiClient.getSchools({ city });
+            const filtered = citySchools
+              .filter((s) => createSchoolSlug(s.school) !== slug)
+              .slice(0, 6);
+            setSimilarSchools(filtered);
+          }
+        }
       } catch (error) {
         console.error("Error loading school:", error);
         setSchool(null);
+        setSimilarSchools([]);
       } finally {
         setLoading(false);
       }
     };
-
     loadSchool();
   }, [slug]);
 
-  // Sticky Contact card: apply styles directly to DOM so it actually sticks (desktop only)
   useEffect(() => {
-    if (!school) return;
-
-    let rafId: number;
-    let scrollTarget: Window | Element = window;
-    let timeoutId: ReturnType<typeof setTimeout>;
-
-    const updateSticky = () => {
-      const isMd = typeof window !== "undefined" && window.innerWidth >= 768;
-      const column = contactColumnRef.current;
-      const el = contactStickyRef.current;
-      if (!column || !el) return;
-      if (!isMd) {
-        el.style.position = "";
-        el.style.top = "";
-        el.style.left = "";
-        el.style.width = "";
-        return;
-      }
-      const colRect = column.getBoundingClientRect();
-      const cardRect = el.getBoundingClientRect();
-      const cardHeight = cardRect.height;
-      const stickZoneBottom = STICKY_TOP_PX + cardHeight;
-      const shouldStick =
-        cardRect.top <= STICKY_TOP_PX && colRect.bottom > stickZoneBottom;
-
-      if (shouldStick) {
-        el.style.position = "fixed";
-        el.style.top = `${STICKY_TOP_PX}px`;
-        el.style.left = `${colRect.left}px`;
-        el.style.width = `${colRect.width}px`;
-      } else {
-        el.style.position = "";
-        el.style.top = "";
-        el.style.left = "";
-        el.style.width = "";
-      }
-    };
-
-    const onScrollOrResize = () => {
-      rafId = requestAnimationFrame(updateSticky);
-    };
-
-    // Find scrollable ancestor (if any); otherwise use window
-    const getScrollParent = (node: HTMLElement | null): Element | null => {
-      if (!node) return null;
-      let p: HTMLElement | null = node.parentElement;
-      while (p) {
-        const style = getComputedStyle(p);
-        const oy = style.overflowY;
-        const o = style.overflow;
-        if (
-          (oy === "auto" ||
-            oy === "scroll" ||
-            o === "auto" ||
-            o === "scroll") &&
-          p.scrollHeight > p.clientHeight
-        ) {
-          return p;
-        }
-        p = p.parentElement;
-      }
-      return null;
-    };
-
-    const setup = () => {
-      const col = contactColumnRef.current;
-      const el = contactStickyRef.current;
-      if (!col || !el) return;
-      scrollTarget = getScrollParent(col) || window;
-      if (scrollTarget === window) {
-        // Page scroll can fire on window or documentElement depending on browser
-        window.addEventListener("scroll", onScrollOrResize, { passive: true });
-        document.documentElement.addEventListener("scroll", onScrollOrResize, {
-          passive: true,
-        });
-      } else {
-        scrollTarget.addEventListener("scroll", onScrollOrResize, {
-          passive: true,
-        });
-      }
-      window.addEventListener("resize", onScrollOrResize);
-      updateSticky();
-    };
-
-    timeoutId = setTimeout(setup, 150);
-
+    if (!isContactSheetOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
-      clearTimeout(timeoutId);
-      cancelAnimationFrame(rafId);
-      if (scrollTarget === window) {
-        window.removeEventListener("scroll", onScrollOrResize);
-        document.documentElement.removeEventListener(
-          "scroll",
-          onScrollOrResize,
-        );
-      } else {
-        scrollTarget.removeEventListener("scroll", onScrollOrResize);
-      }
-      window.removeEventListener("resize", onScrollOrResize);
-      const el = contactStickyRef.current;
-      if (el) {
-        el.style.position = "";
-        el.style.top = "";
-        el.style.left = "";
-        el.style.width = "";
-      }
+      document.body.style.overflow = previous;
     };
-  }, [school]);
+  }, [isContactSheetOpen]);
 
-  // Show loading state
+  /* ── Loading state ──────────────────────────────────────────────── */
   if (loading) {
     return (
-      <section className="w-full bg-white flex flex-col items-center pb-40 px-5">
-        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
-          <Navbar textColor="black" />
+      <div className="w-full bg-white min-h-screen">
+        <div className="w-full px-5 md:px-10">
+          <Navbar textColor="black" sticky={false} />
         </div>
-        <div className="pt-13 flex flex-col items-center md:max-w-[1000px] w-full px-0 mt-28">
-          {/* Header Skeleton */}
-          <div className="rounded-[16px] bg-[#F6F3FA] p-4 flex md:flex-row flex-col gap-4 md:items-center w-full shadow-sm">
-            <SkeletonLoader className="w-80 h-50" />
-            <div className="flex flex-col gap-2">
-              <SkeletonLoader className="h-8 w-64" />
-              <div className="flex items-center my-1">
-                <SkeletonLoader className="h-4 w-4 rounded-full mr-2" />
-                <SkeletonLoader className="h-4 w-32" />
+        <div className="max-w-[960px] mx-auto px-5 mt-10 pb-40">
+          <SkeletonLoader className="h-4 w-56 mb-8" />
+          <SkeletonLoader className="h-9 w-3/4 mb-3" />
+          <SkeletonLoader className="h-5 w-48 mb-3" />
+          <SkeletonLoader className="h-6 w-40 mb-3" />
+          <SkeletonLoader className="h-4 w-full mb-1" />
+          <SkeletonLoader className="h-4 w-5/6 mb-10" />
+          <SkeletonLoader className="w-full h-60 rounded-xl mb-10" />
+          <div className="grid md:grid-cols-2 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex flex-col gap-2">
+                <SkeletonLoader className="h-3 w-20" />
+                <SkeletonLoader className="h-5 w-full" />
               </div>
-              <SkeletonLoader className="h-8 w-32 rounded-lg" />
-            </div>
-          </div>
-
-          {/* Two-column skeleton: Overview (left) + Contact (right) */}
-          <div className="w-full mt-6 grid grid-cols-1 md:grid-cols-[1fr_340px] gap-8 md:gap-10">
-            <div className="flex flex-col gap-10">
-              <div className="rounded-2xl p-8 w-full bg-[#F6F3FA] shadow-sm">
-                <div className="flex gap-2 items-center -ml-1 mb-4">
-                  <SkeletonLoader className="h-6 w-6 rounded" />
-                  <SkeletonLoader className="h-6 w-24" />
-                </div>
-                <div className="grid md:grid-cols-2 grid-cols-1 gap-x-12 gap-y-6 mt-8">
-                  {Array.from({ length: 6 }).map((_, index) => (
-                    <div key={index} className="flex flex-col gap-2">
-                      <SkeletonLoader className="h-5 w-32" />
-                      <SkeletonLoader className="h-4 w-full" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="md:sticky md:top-24">
-              <div className="rounded-2xl bg-[#F6F3FA] p-6 shadow-sm border border-gray-100 flex flex-col gap-4 items-center justify-center min-h-[200px]">
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-full border-4 border-[#774BE5]/20 border-t-[#774BE5] animate-spin" />
-                  <div
-                    className="absolute inset-0 w-12 h-12 rounded-full border-4 border-transparent border-b-[#9B6EF3]/50 animate-spin"
-                    style={{
-                      animationDirection: "reverse",
-                      animationDuration: "0.8s",
-                    }}
-                  />
-                </div>
-                <p className="text-[#774BE5] font-medium text-[14px] animate-pulse">
-                  Loading...
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      </section>
+      </div>
     );
   }
 
-  // Show 404 if school not found
+  /* ── 404 state ──────────────────────────────────────────────────── */
   if (!school) {
     return (
-      <section className="w-full bg-white flex flex-col items-center pb-40 px-5">
-        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
-          <Navbar textColor="black" />
+      <div className="w-full bg-white min-h-screen">
+        <div className="w-full px-5 md:px-10">
+          <Navbar textColor="black" sticky={false} />
         </div>
-        <div className="pt-13 flex flex-col items-center md:max-w-[1000px] w-full px-0 mt-28">
-          <div className="rounded-[16px] bg-[#F6F3FA] p-8 text-center shadow-sm">
-            <h1 className="text-[24px] font-bold text-[#0E1C29] mb-4">
-              School Not Found
-            </h1>
-            <p className="text-[15px] text-gray-600 mb-6">
-              The school you&apos;re looking for doesn&apos;t exist.
-            </p>
-            <Link
-              href="/directory"
-              className="bg-[#774BE5] text-white px-6 py-3 rounded-full text-[14px] font-semibold"
-            >
-              Back to Directory
-            </Link>
-          </div>
+        <div className="max-w-[960px] mx-auto px-5 mt-24 pb-40 text-center">
+          <h1 className="text-[24px] font-bold text-[#0E1C29] mb-4">School Not Found</h1>
+          <p className="text-[15px] text-gray-500 mb-6">
+            The school you&apos;re looking for doesn&apos;t exist.
+          </p>
+          <Link
+            href="/directory"
+            className="bg-[#774BE5] text-white px-6 py-3 rounded-full text-[14px] font-semibold"
+          >
+            Back to Directory
+          </Link>
         </div>
-      </section>
+      </div>
     );
   }
 
+  const phoneNumber = (school.number || "").split(",")[0]?.trim() || "";
+
+  /* ── Main render ────────────────────────────────────────────────── */
   return (
     <>
-      <section className="w-full bg-white flex flex-col items-center pb-40 px-5">
-        {/* Navbar */}
-        <div className="w-full flex items-center justify-center md:px-10 pt-5 md:pt-0">
-          <Navbar textColor="black" />
+      <div className="w-full bg-white">
+        {/* Navbar – not sticky on this page */}
+        <div className="w-full px-5 md:px-10">
+          <Navbar textColor="black" sticky={false} />
         </div>
 
-        {/* Main Content */}
-        <div className="pt-13 flex flex-col items-center md:max-w-[1000px] w-full px-0 mt-14">
-          <div className="w-full mb-4">
-            <Breadcrumbs currentLabel={school?.school} />
+        {/* Main content column */}
+        <div className="max-w-[960px] mx-auto px-5 pb-32 md:pb-20">
+
+          {/* ── Breadcrumb ──────────────────────────────────────────── */}
+          <div className="mt-6 mb-8">
+            <Breadcrumbs
+              items={[
+                { label: "Home", href: "/" },
+                ...(cityBreadcrumbLabel && cityBreadcrumbHref
+                  ? [{ label: cityBreadcrumbLabel, href: cityBreadcrumbHref }]
+                  : []),
+                { label: school.school || "School Name" },
+              ]}
+            />
           </div>
 
-          {/* Header */}
-          <div className="rounded-[16px] bg-[#F6F3FA] p-4 flex md:flex-row flex-col gap-4 md:items-center w-full shadow-sm">
-            <div className="relative w-full md:w-80 md:h-48 border border-gray-200 rounded-[10px] bg-white overflow-hidden flex items-center justify-center">
+          {/* ── Hero: Main info ──────────────────────────────────────── */}
+          <div className="pb-8 border-b border-gray-100">
+            {/* Name + share */}
+            <div className="flex items-start justify-between gap-4">
+              <h1 className="text-[26px] md:text-[34px] font-bold text-[#0E1C29] leading-tight tracking-tight">
+                {school.school}
+              </h1>
+              <button
+                className="shrink-0 mt-1 w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 text-[#374151] hover:border-[#774BE5] hover:text-[#774BE5] transition-colors"
+                onClick={() => (!isDesktop ? handleNativeShare() : setShowShareModal(true))}
+                aria-label="Share school profile"
+              >
+                <i className="ri-share-2-line text-[17px]" />
+              </button>
+            </div>
+
+            {/* City + updated */}
+            <div className="flex items-center gap-1.5 mt-3 flex-wrap">
+              <i className="ri-map-pin-2-line text-[#774BE5] text-[14px]" />
+              <span className="text-[14px] text-[#374151]">{school.city || "City"}</span>
+              <span className="text-gray-200 mx-1">|</span>
+              <span className="text-[13px] text-gray-400">
+                Updated {formatLastUpdated(school.updated_at)}
+              </span>
+            </div>
+
+            {/* Tuition */}
+            <p className="text-[20px] font-semibold text-[#0E1C29] mt-4">
+              {school.min_tuition || "N/A"} – {school.max_tuition || "N/A"}
+              {school.min_tuition?.toLowerCase().includes("/month") ||
+              school.max_tuition?.toLowerCase().includes("/month")
+                ? ""
+                : " / year"}
+            </p>
+
+            {/* Summary */}
+            {school.summary && (
+              <p className="text-[15px] text-[#4B5563] leading-relaxed mt-3">
+                {school.summary}
+              </p>
+            )}
+
+            {/* Website shortcut */}
+            {school.website && (
+              <a
+                href={school.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 mt-3 text-[14px] text-[#774BE5] hover:underline font-medium"
+              >
+                <i className="ri-global-line text-[14px]" />
+                Official website ↗
+              </a>
+            )}
+          </div>
+
+          {/* ── School image / logo ──────────────────────────────────── */}
+          <div className="py-8 border-b border-gray-100">
+            <div className="relative w-full h-52 md:h-64 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex items-center justify-center">
               <Image
-                src={
-                  optimizeImageUrl(school?.logo_banner) || "/images/Logo.png"
-                }
-                alt={school?.school || "School Logo"}
-                width={400}
-                height={200}
+                src={optimizeImageUrl(school.logo_banner) || "/images/Logo.png"}
+                alt={school.school || "School Logo"}
+                width={920}
+                height={300}
                 className="max-w-full max-h-full object-contain"
               />
-              <span className="absolute bottom-2 right-2 group inline-flex">
-                <i className="ri-verified-badge-fill text-[#774BE5] text-xl cursor-pointer drop-shadow-sm"></i>
-                <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[14px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+              {/* Verified badge */}
+              <span className="absolute bottom-3 right-3 group inline-flex">
+                <i className="ri-verified-badge-fill text-[#774BE5] text-xl cursor-pointer drop-shadow-sm" />
+                <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[13px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                   Verified by Aralya
-                  <div className="absolute top-full right-4 -mt-1">
-                    <div className="border-4 border-transparent border-t-[#774BE5]"></div>
-                  </div>
+                  <div className="absolute top-full right-4 -mt-1 border-4 border-transparent border-t-[#774BE5]" />
                 </div>
               </span>
             </div>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <h4 className="text-[#0E1C29] text-[24px] font-semibold">
-                  {school?.school || "School Name"}
-                </h4>
+          </div>
 
-                <div
-                  className="flex items-center gap-2 cursor-pointer bg-[#774BE5] rounded-full px-2 py-1"
-                  onClick={() => {
-                    // On mobile, directly trigger native share
-                    if (!isDesktop) {
-                      handleNativeShare();
-                    } else {
-                      // On desktop, show modal
-                      setShowShareModal(true);
-                    }
-                  }}
-                >
-                  <i className="ri-share-2-line text-white text-xl"></i>
-                </div>
-              </div>
-              <div className="flex items-center my-1 gap-2 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <i className="ri-map-pin-line text-[#374151] text-[16px]"></i>
-                  <p className="text-[16px] font-medium text-[#374151]">
-                    {school?.city || "City"}
+          {/* ── Overview ────────────────────────────────────────────── */}
+          <div className="py-8 border-b border-gray-100">
+            <h2 className="text-[17px] font-semibold text-[#0E1C29] mb-6">Overview</h2>
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-x-12 gap-y-6">
+              {[
+                { label: "Curriculum", value: school.curriculum },
+                { label: "Class Size", value: school.class_size },
+                { label: "Schedule", value: school.schedule },
+                { label: "Programs", value: school.programs },
+                { label: "After-school Care", value: school.care },
+                { label: "Special Education Support", value: school.support },
+              ].map(({ label, value }) => (
+                <div key={label}>
+                  <p className="text-[11px] uppercase tracking-widest text-gray-400 font-semibold mb-1">
+                    {label}
                   </p>
+                  <p className="text-[15px] text-[#0E1C29]">{value || "Not specified"}</p>
                 </div>
-                <i className="ri-checkbox-blank-circle-fill text-black text-[6px]"></i>
-                <p className="text-[14px] font-medium text-[#374151]">
-                  Updated: {formatLastUpdated(school?.updated_at)}
-                </p>
-              </div>
-              {school?.website && (
-                <div className="flex items-center my-1">
-                  <i className="ri-global-line text-[#774BE5] text-[16px]"></i>
-                  <a
-                    href={school?.website || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[16px] font-medium text-[#774BE5] hover:underline"
-                  >
-                    Official website ↗
-                  </a>
-                </div>
-              )}
-              <p className="text-[#0E1C29] font-bold text-[20px]">
-                {school?.min_tuition || "N/A"} - {school?.max_tuition || "N/A"}
-                {school?.min_tuition?.toLowerCase().includes("/month") ||
-                school?.max_tuition?.toLowerCase().includes("/month")
-                  ? ""
-                  : " / year"}
-              </p>
-              {school?.summary && (
-                <p className="text-[15px] font-medium text-[#374151]">
-                  {school.summary}
-                </p>
-              )}
+              ))}
             </div>
           </div>
 
-          {/* Grid: row1 = Overview | Contact (sticky, spans 3 rows), row2 = Location full width, row3 = Help full width */}
-          <div className="w-full mt-6 grid grid-cols-1 md:grid-cols-[1fr_340px] gap-8 md:gap-10 items-start overflow-visible">
-            {/* Row 1: Overview */}
-            <div className="min-w-0 md:row-start-1 md:col-start-1">
-              <div className="rounded-2xl p-8 w-full bg-[#F6F3FA] shadow-sm border border-gray-100">
-                <div className="flex gap-2 items-center -ml-1">
-                  <i className="ri-book-open-line text-[#0E1C29] text-[18px] mt-0.5 ml-1"></i>
-                  <p className="text-[18px] text-[#0E1C29] font-semibold">
-                    Overview
-                  </p>
-                </div>
-
-                <div className="grid md:grid-cols-2 grid-cols-1 gap-x-12 gap-y-6 mt-8">
-                  <div className="flex flex-col gap-2">
-                    <p className="text-[16px] text-[#0E1C29] font-semibold">
-                      Curriculum
-                    </p>
-                    <p className="text-[#0E1C29] font-normal text-[15px]">
-                      {school?.curriculum || "Not specified"}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <p className="text-[16px] text-[#0E1C29] font-semibold">
-                      Class Size
-                    </p>
-                    <p className="text-[#0E1C29] font-normal text-[15px]">
-                      {school?.class_size || "Not specified"}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <p className="text-[16px] text-[#0E1C29] font-semibold">
-                      Schedule
-                    </p>
-                    <p className="text-[#0E1C29] font-normal text-[15px]">
-                      {school?.schedule || "Not specified"}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <p className="text-[16px] text-[#0E1C29] font-semibold">
-                      Programs
-                    </p>
-                    <p className="text-[#0E1C29] font-normal text-[15px]">
-                      {school?.programs || "Not specified"}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <p className="text-[16px] text-[#0E1C29] font-semibold">
-                      After-school Care
-                    </p>
-                    <p className="text-[#0E1C29] font-normal text-[15px]">
-                      {school?.care || "Not specified"}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <p className="text-[16px] text-[#0E1C29] font-semibold">
-                      Special Education Support
-                    </p>
-                    <p className="text-[#0E1C29] font-normal text-[15px]">
-                      {school?.support || "Not specified"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Contact: col 2, spans rows 1–3; JS sticky keeps card fixed until column ends (no overlap with Location/Help) */}
-            <div
-              ref={contactColumnRef}
-              className="md:col-start-2 md:row-start-1 md:row-span-3 md:self-start w-full md:min-h-0"
-            >
-              <div ref={contactStickyRef} className="z-10 w-full">
-                <div className="rounded-2xl bg-[#F6F3FA] p-6 shadow-sm border border-gray-100 flex flex-col gap-4">
-                  <h4 className="text-[#0E1C29] text-[18px] font-semibold">
-                    Contact School
-                  </h4>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <Link
-                      href={`tel:${(school?.number || "").split(",")[0]?.trim() || ""}`}
-                      className="bg-[#774BE5] hover:bg-[#6B3FD6] rounded-full px-4 py-3 transition-colors"
-                    >
-                      <p className="text-white text-center font-semibold text-[14px]">
-                        Call
-                      </p>
-                    </Link>
-                    <Link
-                      href={`sms:${(school?.number || "").split(",")[0]?.trim() || ""}`}
-                      className="bg-[#774BE5] hover:bg-[#6B3FD6] rounded-full px-4 py-3 transition-colors"
-                    >
-                      <p className="text-white text-center font-semibold text-[14px]">
-                        Text
-                      </p>
-                    </Link>
-                    <Link
-                      href={school?.facebook || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-[#774BE5] hover:bg-[#6B3FD6] rounded-full px-4 py-3 transition-colors"
-                    >
-                      <p className="text-white text-center font-semibold text-[14px]">
-                        Facebook
-                      </p>
-                    </Link>
-                    <Link
-                      href={`mailto:${school?.email || ""}`}
-                      className="bg-[#774BE5] hover:bg-[#6B3FD6] rounded-full px-4 py-3 transition-colors"
-                    >
-                      <p className="text-white text-center font-semibold text-[14px]">
-                        Email
-                      </p>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Row 2: Location – full width (span both columns) */}
-            <div className="w-full md:row-start-2 md:col-start-1 md:col-span-2 rounded-3xl bg-[#F6F3FA] p-6 flex flex-col gap-4 shadow-sm">
-              <div className="flex gap-2 items-center -ml-1 mb-2">
-                <i className="ri-map-pin-line text-[#0E1C29] text-[18px] mt-0.5 ml-1"></i>
-                <p className="text-[18px] text-[#0E1C29] font-semibold">
-                  Location
-                </p>
-              </div>
-              <p className="text-[#0E1C29] font-normal text-[15px]">
-                {school?.location && school.location.trim() !== ""
+          {/* ── Location ────────────────────────────────────────────── */}
+          <div className="py-8 border-b border-gray-100">
+            <h2 className="text-[17px] font-semibold text-[#0E1C29] mb-4">Location</h2>
+            <div className="flex items-start gap-2">
+              <i className="ri-map-pin-line text-[#774BE5] text-[15px] mt-0.5 shrink-0" />
+              <p className="text-[15px] text-[#374151] leading-relaxed">
+                {school.location?.trim()
                   ? school.location
-                  : school?.city && school.city.trim() !== ""
+                  : school.city?.trim()
                     ? school.city
                     : "Philippines"}
               </p>
-              <div className="mt-4 flex md:justify-start">
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                    school?.location && school.location.trim() !== ""
-                      ? `${school.location}, Philippines`
-                      : school?.city && school.city.trim() !== ""
-                        ? `${school.city}, Philippines`
-                        : "Philippines",
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#774BE5] rounded-full px-4 py-2 inline-flex items-center text-white font-semibold text-[14px]"
-                >
-                  Google Maps
-                </a>
-              </div>
             </div>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                school.location?.trim()
+                  ? `${school.location}, Philippines`
+                  : school.city?.trim()
+                    ? `${school.city}, Philippines`
+                    : "Philippines",
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-5 text-[14px] font-semibold text-[#774BE5] border border-[#774BE5] rounded-full px-5 py-2 hover:bg-[#774BE5] hover:text-white transition-colors"
+            >
+              <i className="ri-map-pin-2-line text-[15px]" />
+              View on Google Maps
+            </a>
+          </div>
 
-            {/* Row 3: Help – full width (span both columns) */}
-            <div className="w-full -mb-16 md:row-start-3 md:col-start-1 md:col-span-2 rounded-3xl bg-[#F6F3FA] p-6 flex flex-col gap-4 shadow-sm border border-gray-100">
-              <div className="flex gap-2 items-center -ml-1 mb-2">
-                <i className="ri-lightbulb-line text-[#0E1C29] text-[18px] mt-0.5 ml-1"></i>
-                <h4 className="text-[18px] text-[#0E1C29] font-semibold">
+          {/* ── Contact (desktop only) ───────────────────────────────── */}
+          <div className="hidden md:block py-8 border-b border-gray-100">
+            <h2 className="text-[17px] font-semibold text-[#0E1C29] mb-1">Contact School</h2>
+            <p className="text-[13px] text-gray-400 mb-5">
+              Confirm fees, schedules, and availability directly with the school.
+            </p>
+            <div className="flex flex-wrap gap-2.5">
+              {[
+                { label: "Call", icon: "ri-phone-line", href: `tel:${phoneNumber}` },
+                { label: "Text", icon: "ri-message-2-line", href: `sms:${phoneNumber}` },
+                {
+                  label: "Facebook",
+                  icon: "ri-facebook-line",
+                  href: school.facebook || "#",
+                  external: true,
+                },
+                { label: "Email", icon: "ri-mail-line", href: `mailto:${school.email || ""}` },
+                {
+                  label: "Website",
+                  icon: "ri-global-line",
+                  href: school.website || "#",
+                  external: true,
+                },
+              ].map(({ label, icon, href, external }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="inline-flex items-center gap-2 border border-gray-200 hover:border-[#774BE5] hover:text-[#774BE5] text-[#0E1C29] rounded-full px-5 py-2 text-[14px] font-medium transition-colors"
+                >
+                  <i className={`${icon} text-[15px]`} />
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Accuracy ─────────────────────────────────────────────── */}
+          <div className="py-8 border-b border-gray-100">
+            <div className="flex items-start gap-3">
+              <i className="ri-edit-box-line text-gray-400 text-[18px] mt-0.5 shrink-0" />
+              <div>
+                <p className="text-[15px] font-semibold text-[#0E1C29] mb-1">
                   Help us keep this information accurate
-                </h4>
-              </div>
-              <div className="flex flex-col gap-2">
-                <p className="text-[15px] text-[#374151]">
-                  If you notice outdated or incorrect details, message us on
-                  Facebook and we'll review it promptly.
+                </p>
+                <p className="text-[14px] text-[#4B5563] mb-4 leading-relaxed">
+                  If you notice outdated or incorrect details, message us on Facebook and
+                  we&apos;ll review it promptly.
                 </p>
                 <Link
                   href="https://web.facebook.com/people/Aralya/61578164295126"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-[#774BE5] rounded-full px-4 py-2 w-fit mt-2 flex items-center hover:bg-[#6B3FD6] transition-colors"
+                  className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#774BE5] border border-[#774BE5] rounded-full px-5 py-2 hover:bg-[#774BE5] hover:text-white transition-colors"
                 >
-                  <span className="text-white text-center font-semibold text-[14px]">
-                    Message on Facebook
-                  </span>
+                  Report a Correction
                 </Link>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Share Modal */}
+          {/* ── Similar Schools ──────────────────────────────────────── */}
+          {primaryCity && similarSchools.length >= 3 && (
+            <div className="pt-10">
+              <h2 className="text-[17px] font-semibold text-[#0E1C29] mb-5">
+                Similar Preschools in {primaryCity}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {similarSchools.slice(0, 6).map((item) => (
+                  <Link
+                    key={item.school}
+                    href={`/directory/${createSchoolSlug(item.school)}/`}
+                    className="group flex flex-col gap-1.5 p-4 rounded-xl border border-gray-100 hover:border-[#774BE5]/30 hover:bg-[#FAFAFF] transition-colors"
+                  >
+                    <p className="text-[15px] font-semibold text-[#0E1C29] line-clamp-2 group-hover:text-[#774BE5] transition-colors">
+                      {item.school}
+                    </p>
+                    {item.curriculum && (
+                      <p className="text-[13px] text-gray-400">{item.curriculum}</p>
+                    )}
+                    <p className="text-[13px] font-semibold text-[#774BE5] mt-1">
+                      {item.min_tuition || "N/A"} – {item.max_tuition || "N/A"}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Share modal ───────────────────────────────────────────── */}
       {showShareModal && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
           onClick={() => setShowShareModal(false)}
         >
           <div
-            className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl"
+            className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[18px] font-semibold text-[#0E1C29]">
-                Share this school
-              </h3>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-[17px] font-semibold text-[#0E1C29]">Share this school</h3>
               <button
                 onClick={() => setShowShareModal(false)}
-                className="text-gray-500 hover:text-gray-700 transition-colors"
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
               >
-                <i className="ri-close-line text-2xl"></i>
+                <i className="ri-close-line text-[18px] text-[#374151]" />
               </button>
             </div>
 
-            {/* School Image and Details */}
-            <div className="mb-6">
-              <div className="w-full flex items-stretch gap-4 mb-4">
-                <div className="w-2/5 h-48 flex-shrink-0 bg-gray-200 border border-gray-200 bg-white rounded-lg overflow-hidden flex items-center justify-center">
-                  <Image
-                    src={
-                      optimizeImageUrl(school?.logo_banner) ||
-                      "/images/Logo.png"
-                    }
-                    alt={school?.school || "School Logo"}
-                    width={400}
-                    height={200}
-                    className="max-w-full max-h-full object-contain"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2 w-3/5 min-w-0">
-                  <h4 className="text-[24px] font-semibold text-[#0E1C29] mb-2 break-words leading-tight">
-                    {school?.school || "School Name"}
-                  </h4>
-                  <div className="flex flex-col gap-1 text-[15px] text-[#374151]">
-                    <div className="flex items-center gap-2">
-                      <i className="ri-map-pin-line"></i>
-                      <span>{school?.city || "City"}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <i className="ri-money-dollar-circle-line"></i>
-                      <span>
-                        {school?.min_tuition || "N/A"} -{" "}
-                        {school?.max_tuition || "N/A"}
-                        {school?.min_tuition
-                          ?.toLowerCase()
-                          .includes("/month") ||
-                        school?.max_tuition?.toLowerCase().includes("/month")
-                          ? ""
-                          : " / year"}
-                      </span>
-                    </div>
-                    {school?.curriculum && (
-                      <div className="flex items-center gap-2">
-                        <i className="ri-book-open-line"></i>
-                        <span>{school.curriculum}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+            {/* School preview */}
+            <div className="flex items-center gap-3 mb-6 pb-5 border-b border-gray-100">
+              <div className="w-14 h-14 rounded-lg border border-gray-100 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden">
+                <Image
+                  src={optimizeImageUrl(school.logo_banner) || "/images/Logo.png"}
+                  alt={school.school || "School Logo"}
+                  width={56}
+                  height={56}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[15px] font-semibold text-[#0E1C29] truncate">{school.school}</p>
+                <p className="text-[13px] text-gray-400 mt-0.5">{school.city}</p>
               </div>
             </div>
 
-            {/* Share Actions */}
-            <div className="space-y-3">
-              {isDesktop ? (
-                /* Desktop: Show Copy Link, Messenger, Viber, Facebook in 2x2 grid */
-                <div className="grid grid-cols-2 gap-3">
-                  {/* 1. Copy Link */}
-                  <button
-                    onClick={handleCopyLink}
-                    className="bg-[#774BE5] hover:bg-[#6B3FD6] text-white rounded-full px-4 py-3 flex items-center justify-center gap-2 font-semibold transition-colors"
-                  >
-                    {linkCopied ? (
-                      <>
-                        <i className="ri-check-line text-lg"></i>
-                        <span>Link Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <i className="ri-link text-lg"></i>
-                        <span>Copy Link</span>
-                      </>
-                    )}
-                  </button>
-
-                  {/* 2. Messenger */}
-                  <button
-                    onClick={shareToMessenger}
-                    className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
-                  >
-                    <i className="ri-messenger-fill text-[#0084FF] text-xl"></i>
-                    <span className="font-medium text-[16px] text-[#0E1C29]">
-                      Messenger
-                    </span>
-                  </button>
-
-                  {/* 3. Viber */}
-                  <button
-                    onClick={shareToViber}
-                    className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
-                  >
-                    <i className="ri-message-3-fill text-[#665CAC] text-xl"></i>
-                    <span className="font-medium text-[16px] text-[#0E1C29]">
-                      Viber
-                    </span>
-                  </button>
-
-                  {/* 4. Facebook */}
-                  <button
-                    onClick={shareToFacebook}
-                    className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
-                  >
-                    <i className="ri-facebook-fill text-[#1877F2] text-xl"></i>
-                    <span className="font-medium text-[16px] text-[#0E1C29]">
-                      Facebook
-                    </span>
-                  </button>
-                </div>
-              ) : (
-                /* Mobile: Use native share */
-                <>
-                  {/* Native Share Button */}
-                  <button
-                    onClick={handleNativeShare}
-                    className="w-full bg-[#774BE5] hover:bg-[#6B3FD6] text-white rounded-full px-4 py-3 flex items-center justify-center gap-2 font-semibold transition-colors"
-                  >
-                    <i className="ri-share-2-line text-lg"></i>
-                  </button>
-
-                  {/* Copy Link as secondary option */}
-                  <button
-                    onClick={handleCopyLink}
-                    className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:bg-gray-50 transition-colors"
-                  >
-                    {linkCopied ? (
-                      <>
-                        <i className="ri-check-line text-lg"></i>
-                        <span className="font-medium text-[16px] text-[#0E1C29]">
-                          Link Copied!
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <i className="ri-link text-lg"></i>
-                        <span className="font-medium text-[16px] text-[#0E1C29]">
-                          Copy Link
-                        </span>
-                      </>
-                    )}
-                  </button>
-                </>
-              )}
-            </div>
+            {/* Share options */}
+            {isDesktop ? (
+              <div className="grid grid-cols-2 gap-2.5">
+                <button
+                  onClick={handleCopyLink}
+                  className="bg-[#774BE5] hover:bg-[#6B3FD6] text-white rounded-full px-4 py-2.5 flex items-center justify-center gap-2 text-[14px] font-semibold transition-colors"
+                >
+                  {linkCopied ? (
+                    <><i className="ri-check-line" /><span>Copied!</span></>
+                  ) : (
+                    <><i className="ri-link" /><span>Copy Link</span></>
+                  )}
+                </button>
+                <button
+                  onClick={shareToMessenger}
+                  className="flex items-center justify-center gap-2 border border-gray-200 rounded-full px-4 py-2.5 text-[14px] font-medium text-[#0E1C29] hover:bg-gray-50 transition-colors"
+                >
+                  <i className="ri-messenger-fill text-[#0084FF]" />
+                  Messenger
+                </button>
+                <button
+                  onClick={shareToViber}
+                  className="flex items-center justify-center gap-2 border border-gray-200 rounded-full px-4 py-2.5 text-[14px] font-medium text-[#0E1C29] hover:bg-gray-50 transition-colors"
+                >
+                  <i className="ri-message-3-fill text-[#665CAC]" />
+                  Viber
+                </button>
+                <button
+                  onClick={shareToFacebook}
+                  className="flex items-center justify-center gap-2 border border-gray-200 rounded-full px-4 py-2.5 text-[14px] font-medium text-[#0E1C29] hover:bg-gray-50 transition-colors"
+                >
+                  <i className="ri-facebook-fill text-[#1877F2]" />
+                  Facebook
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={handleNativeShare}
+                  className="w-full bg-[#774BE5] hover:bg-[#6B3FD6] text-white rounded-full px-4 py-2.5 flex items-center justify-center gap-2 text-[14px] font-semibold transition-colors"
+                >
+                  <i className="ri-share-2-line" />
+                  Share
+                </button>
+                <button
+                  onClick={handleCopyLink}
+                  className="w-full flex items-center justify-center gap-2 border border-gray-200 rounded-full px-4 py-2.5 text-[14px] font-medium text-[#0E1C29] hover:bg-gray-50 transition-colors"
+                >
+                  {linkCopied ? (
+                    <><i className="ri-check-line" /><span>Link Copied!</span></>
+                  ) : (
+                    <><i className="ri-link" /><span>Copy Link</span></>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
 
+      {/* ── Mobile sticky CTA + bottom sheet ─────────────────────── */}
+      {!loading && school && (
+        <>
+          {/* Sticky "Contact School" bar */}
+          <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-3">
+            <button
+              onClick={() => setIsContactSheetOpen(true)}
+              className="w-full bg-[#774BE5] hover:bg-[#6B3FD6] text-white rounded-full py-3 text-[15px] font-semibold transition-colors"
+            >
+              Contact School
+            </button>
+          </div>
+
+          {/* Bottom sheet overlay */}
+          <div
+            className={`md:hidden fixed inset-0 z-50 transition-all duration-300 ${
+              isContactSheetOpen ? "pointer-events-auto" : "pointer-events-none"
+            }`}
+          >
+            {/* Dimmed backdrop */}
+            <button
+              aria-label="Close contact options"
+              onClick={() => setIsContactSheetOpen(false)}
+              className={`absolute inset-0 bg-black/45 transition-opacity duration-300 ${
+                isContactSheetOpen ? "opacity-100" : "opacity-0"
+              }`}
+            />
+
+            {/* Sheet panel */}
+            <div
+              className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl transition-transform duration-300 ease-out ${
+                isContactSheetOpen ? "translate-y-0" : "translate-y-full"
+              }`}
+            >
+              {/* Handle */}
+              <div className="flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 rounded-full bg-gray-200" />
+              </div>
+
+              <div className="px-5 pt-3 pb-10">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-[17px] font-semibold text-[#0E1C29]">Contact School</h4>
+                  <button
+                    onClick={() => setIsContactSheetOpen(false)}
+                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center"
+                    aria-label="Close"
+                  >
+                    <i className="ri-close-line text-[17px] text-[#374151]" />
+                  </button>
+                </div>
+
+                {/* Contact list items */}
+                <div className="divide-y divide-gray-100 mt-3">
+                  <Link
+                    href={`tel:${phoneNumber}`}
+                    className="flex items-center gap-4 py-4"
+                    onClick={() => setIsContactSheetOpen(false)}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center shrink-0">
+                      <i className="ri-phone-line text-green-600 text-[18px]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-semibold text-[#0E1C29]">Call</p>
+                      {phoneNumber && (
+                        <p className="text-[13px] text-gray-400 truncate">{phoneNumber}</p>
+                      )}
+                    </div>
+                    <i className="ri-arrow-right-s-line text-gray-300 text-xl" />
+                  </Link>
+
+                  <Link
+                    href={`sms:${phoneNumber}`}
+                    className="flex items-center gap-4 py-4"
+                    onClick={() => setIsContactSheetOpen(false)}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                      <i className="ri-message-2-line text-blue-500 text-[18px]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-semibold text-[#0E1C29]">Text</p>
+                      {phoneNumber && (
+                        <p className="text-[13px] text-gray-400 truncate">{phoneNumber}</p>
+                      )}
+                    </div>
+                    <i className="ri-arrow-right-s-line text-gray-300 text-xl" />
+                  </Link>
+
+                  <Link
+                    href={school.facebook || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 py-4"
+                    onClick={() => setIsContactSheetOpen(false)}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                      <i className="ri-facebook-fill text-[#1877F2] text-[18px]" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[15px] font-semibold text-[#0E1C29]">Facebook</p>
+                      <p className="text-[13px] text-gray-400">Visit Facebook page</p>
+                    </div>
+                    <i className="ri-arrow-right-s-line text-gray-300 text-xl" />
+                  </Link>
+
+                  <Link
+                    href={`mailto:${school.email || ""}`}
+                    className="flex items-center gap-4 py-4"
+                    onClick={() => setIsContactSheetOpen(false)}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                      <i className="ri-mail-line text-orange-500 text-[18px]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-semibold text-[#0E1C29]">Email</p>
+                      {school.email && (
+                        <p className="text-[13px] text-gray-400 truncate">{school.email}</p>
+                      )}
+                    </div>
+                    <i className="ri-arrow-right-s-line text-gray-300 text-xl" />
+                  </Link>
+
+                  <Link
+                    href={school.website || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 py-4"
+                    onClick={() => setIsContactSheetOpen(false)}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center shrink-0">
+                      <i className="ri-global-line text-[#774BE5] text-[18px]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-semibold text-[#0E1C29]">Website</p>
+                      {school.website && (
+                        <p className="text-[13px] text-gray-400 truncate">{school.website}</p>
+                      )}
+                    </div>
+                    <i className="ri-arrow-right-s-line text-gray-300 text-xl" />
+                  </Link>
+                </div>
+
+                <p className="text-[12px] text-gray-400 mt-2 leading-relaxed">
+                  Confirm fees, schedules, and availability directly with the school.
+                </p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 };

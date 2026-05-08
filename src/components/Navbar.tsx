@@ -5,9 +5,10 @@ import React, { useState, useEffect } from "react";
 
 interface NavbarProps {
   textColor?: "white" | "black";
+  sticky?: boolean;
 }
 
-const Navbar = ({ textColor = "white" }: NavbarProps) => {
+const Navbar = ({ textColor = "white", sticky = true }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -44,11 +45,11 @@ const Navbar = ({ textColor = "white" }: NavbarProps) => {
 
   return (
     <div
-      className={` fixed md:top-0 top-2 md:left-0 left-0 right-0 z-[50000] md:px-0 md:py-0 px-3`}
+      className={`${sticky ? "fixed md:top-0 top-2" : "relative top-0 w-full"} md:left-0 left-0 right-0 z-[50000] md:px-0 md:py-0 px-3`}
     >
       <div
         className={`transition-all duration-500 ease-in-out md:px-10 md:py-5 px-3 py-2.5 ${
-          isScrolling && isDesktop
+          sticky && isScrolling && isDesktop
             ? "bg-[#774BE5] md:w-[780px] w-full rounded-2xl mt-5 mx-auto md:top-10 z-[50000]"
             : "w-full md:bg-white/5 md:py-5 bg-[#774BE5] rounded-lg md:rounded-none"
         }`}
