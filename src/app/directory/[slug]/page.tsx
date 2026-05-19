@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,6 +30,9 @@ const SchoolDetails = () => {
   const [isDesktop, setIsDesktop] = useState(false);
   const [isContactSheetOpen, setIsContactSheetOpen] = useState(false);
   const [similarSchools, setSimilarSchools] = useState<School[]>([]);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   const primaryCity = school?.city?.split(",")[0]?.trim() || "";
   const cityBreadcrumbLabel = primaryCity ? `Preschools in ${primaryCity}` : undefined;
@@ -125,7 +128,7 @@ const SchoolDetails = () => {
             const citySchools = await apiClient.getSchools({ city });
             const filtered = citySchools
               .filter((s) => createSchoolSlug(s.school) !== slug)
-              .slice(0, 6);
+              .slice(0, 8);
             setSimilarSchools(filtered);
           }
         }
@@ -139,6 +142,36 @@ const SchoolDetails = () => {
     };
     loadSchool();
   }, [slug]);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const update = () => {
+      const hasOverflow = el.scrollWidth > el.clientWidth + 1;
+      setCanScrollLeft(hasOverflow && el.scrollLeft > 4);
+      setCanScrollRight(
+        hasOverflow && el.scrollLeft + el.clientWidth < el.scrollWidth - 4,
+      );
+    };
+    update();
+    const raf = requestAnimationFrame(update);
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      ro.disconnect();
+    };
+  }, [similarSchools]);
+
+  const scrollSimilar = (dir: 1 | -1) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.9, behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (!isContactSheetOpen) return;
@@ -156,7 +189,7 @@ const SchoolDetails = () => {
         <div className="w-full px-5 md:px-10">
           <Navbar textColor="black" sticky={false} />
         </div>
-        <div className="max-w-[960px] mx-auto px-5 mt-10 pb-40">
+        <div className="max-w-[1120px] mx-auto px-5 mt-10 pb-40">
           <SkeletonLoader className="h-4 w-56 mb-8" />
           <SkeletonLoader className="h-9 w-3/4 mb-3" />
           <SkeletonLoader className="h-5 w-48 mb-3" />
@@ -184,7 +217,7 @@ const SchoolDetails = () => {
         <div className="w-full px-5 md:px-10">
           <Navbar textColor="black" sticky={false} />
         </div>
-        <div className="max-w-[960px] mx-auto px-5 mt-24 pb-40 text-center">
+        <div className="max-w-[1120px] mx-auto px-5 mt-24 pb-40 text-center">
           <h1 className="text-[24px] font-bold text-[#0E1C29] mb-4">School Not Found</h1>
           <p className="text-[15px] text-gray-500 mb-6">
             The school you&apos;re looking for doesn&apos;t exist.
@@ -212,7 +245,7 @@ const SchoolDetails = () => {
         </div>
 
         {/* Main content column */}
-        <div className="max-w-[960px] mx-auto px-5 pb-32 md:pb-20">
+        <div className="max-w-[1120px] mx-auto px-5 pb-32 md:pb-20">
 
           {/* ── Breadcrumb ──────────────────────────────────────────── */}
           <div className="mt-6 mb-8">
@@ -228,10 +261,10 @@ const SchoolDetails = () => {
           </div>
 
           {/* ── Hero: Main info ──────────────────────────────────────── */}
-          <div className="pb-8 border-b border-gray-100">
+          <div className="pb-10">
             {/* Name + share */}
             <div className="flex items-start justify-between gap-4">
-              <h1 className="text-[26px] md:text-[34px] font-bold text-[#0E1C29] leading-tight tracking-tight">
+              <h1 className="text-[28px] md:text-[36px] font-bold text-[#0E1C29] leading-tight tracking-tight">
                 {school.school}
               </h1>
               <button
@@ -262,13 +295,6 @@ const SchoolDetails = () => {
                 : " / year"}
             </p>
 
-            {/* Summary */}
-            {school.summary && (
-              <p className="text-[15px] text-[#4B5563] leading-relaxed mt-3">
-                {school.summary}
-              </p>
-            )}
-
             {/* Website shortcut */}
             {school.website && (
               <a
@@ -283,19 +309,20 @@ const SchoolDetails = () => {
             )}
           </div>
 
-          {/* ── School image / logo ──────────────────────────────────── */}
-          <div className="py-8 border-b border-gray-100">
-            <div className="relative w-full h-52 md:h-64 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex items-center justify-center">
+          {/* ── School image / logo (large, fills area) ──────────────── */}
+          <div className="pb-12">
+            <div className="relative w-full h-72 md:h-[460px] rounded-2xl overflow-hidden bg-gray-50">
               <Image
                 src={optimizeImageUrl(school.logo_banner) || "/images/Logo.png"}
                 alt={school.school || "School Logo"}
-                width={920}
-                height={300}
-                className="max-w-full max-h-full object-contain"
+                fill
+                sizes="(max-width: 768px) 100vw, 960px"
+                className="object-cover"
+                priority
               />
               {/* Verified badge */}
-              <span className="absolute bottom-3 right-3 group inline-flex">
-                <i className="ri-verified-badge-fill text-[#774BE5] text-xl cursor-pointer drop-shadow-sm" />
+              <span className="absolute bottom-4 right-4 group inline-flex">
+                <i className="ri-verified-badge-fill text-[#774BE5] text-2xl cursor-pointer drop-shadow-md" />
                 <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[13px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                   Verified by Aralya
                   <div className="absolute top-full right-4 -mt-1 border-4 border-transparent border-t-[#774BE5]" />
@@ -304,10 +331,61 @@ const SchoolDetails = () => {
             </div>
           </div>
 
-          {/* ── Overview ────────────────────────────────────────────── */}
-          <div className="py-8 border-b border-gray-100">
-            <h2 className="text-[17px] font-semibold text-[#0E1C29] mb-6">Overview</h2>
-            <div className="grid md:grid-cols-2 grid-cols-1 gap-x-12 gap-y-6">
+          {/* ── Quick Info ───────────────────────────────────────────── */}
+          {school.quick_info && (
+            <div className="pb-16">
+              <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-8">
+                Quick Info
+              </h2>
+              <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-16">
+                {[
+                  { label: "Tuition", value: school.quick_info.tuition },
+                  { label: "Curriculum", value: school.quick_info.curriculum },
+                  { label: "Programs", value: school.quick_info.programs },
+                  { label: "Schedule", value: school.quick_info.schedule },
+                  { label: "Class Size", value: school.quick_info.class_size },
+                  { label: "Extended Care", value: school.quick_info.extended_care },
+                  {
+                    label: "Special Needs Support",
+                    value: school.quick_info.special_needs_support,
+                  },
+                ]
+                  .filter(({ value }) => value && value.trim() !== "")
+                  .map(({ label, value }) => (
+                    <div
+                      key={label}
+                      className="flex justify-between items-baseline gap-6 py-4 border-b border-gray-100"
+                    >
+                      <dt className="text-[14px] text-gray-500 font-medium shrink-0">
+                        {label}
+                      </dt>
+                      <dd className="text-[15px] md:text-[16px] text-[#0E1C29] font-semibold text-right">
+                        {value}
+                      </dd>
+                    </div>
+                  ))}
+              </dl>
+            </div>
+          )}
+
+          {/* ── About [School Name] ──────────────────────────────────── */}
+          {school.summary && (
+            <div className="pb-16">
+              <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-6">
+                About {school.school}
+              </h2>
+              <p className="text-[17px] md:text-[18px] text-[#374151] leading-[1.8] max-w-[760px]">
+                {school.summary}
+              </p>
+            </div>
+          )}
+
+          {/* ── School Overview ─────────────────────────────────────── */}
+          <div className="pb-16">
+            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-8">
+              School Overview
+            </h2>
+            <dl className="grid md:grid-cols-2 grid-cols-1 gap-x-16">
               {[
                 { label: "Curriculum", value: school.curriculum },
                 { label: "Class Size", value: school.class_size },
@@ -316,19 +394,22 @@ const SchoolDetails = () => {
                 { label: "After-school Care", value: school.care },
                 { label: "Special Education Support", value: school.support },
               ].map(({ label, value }) => (
-                <div key={label}>
-                  <p className="text-[11px] uppercase tracking-widest text-gray-400 font-semibold mb-1">
-                    {label}
-                  </p>
-                  <p className="text-[15px] text-[#0E1C29]">{value || "Not specified"}</p>
+                <div
+                  key={label}
+                  className="flex flex-col gap-1.5 py-5 border-b border-gray-100"
+                >
+                  <dt className="text-[13px] text-gray-500 font-medium">{label}</dt>
+                  <dd className="text-[16px] md:text-[17px] text-[#0E1C29] leading-snug">
+                    {value || "Not specified"}
+                  </dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
 
           {/* ── Location ────────────────────────────────────────────── */}
-          <div className="py-8 border-b border-gray-100">
-            <h2 className="text-[17px] font-semibold text-[#0E1C29] mb-4">Location</h2>
+          <div className="pb-14">
+            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-5">Location</h2>
             <div className="flex items-start gap-2">
               <i className="ri-map-pin-line text-[#774BE5] text-[15px] mt-0.5 shrink-0" />
               <p className="text-[15px] text-[#374151] leading-relaxed">
@@ -357,8 +438,8 @@ const SchoolDetails = () => {
           </div>
 
           {/* ── Contact (desktop only) ───────────────────────────────── */}
-          <div className="hidden md:block py-8 border-b border-gray-100">
-            <h2 className="text-[17px] font-semibold text-[#0E1C29] mb-1">Contact School</h2>
+          <div className="hidden md:block pb-14">
+            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-2">Contact School</h2>
             <p className="text-[13px] text-gray-400 mb-5">
               Confirm fees, schedules, and availability directly with the school.
             </p>
@@ -394,7 +475,7 @@ const SchoolDetails = () => {
           </div>
 
           {/* ── Accuracy ─────────────────────────────────────────────── */}
-          <div className="py-8 border-b border-gray-100">
+          <div className="pb-14">
             <div className="flex items-start gap-3">
               <i className="ri-edit-box-line text-gray-400 text-[18px] mt-0.5 shrink-0" />
               <div>
@@ -419,28 +500,74 @@ const SchoolDetails = () => {
 
           {/* ── Similar Schools ──────────────────────────────────────── */}
           {primaryCity && similarSchools.length >= 3 && (
-            <div className="pt-10">
-              <h2 className="text-[17px] font-semibold text-[#0E1C29] mb-5">
-                Similar Preschools in {primaryCity}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {similarSchools.slice(0, 6).map((item) => (
+            <div className="pt-2">
+              <div className="flex items-end justify-between mb-6 gap-4">
+                <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight">
+                  Similar Preschools in {primaryCity}
+                </h2>
+                <div className="flex items-center gap-3 shrink-0">
                   <Link
-                    key={item.school}
-                    href={`/directory/${createSchoolSlug(item.school)}/`}
-                    className="group flex flex-col gap-1.5 p-4 rounded-xl border border-gray-100 hover:border-[#774BE5]/30 hover:bg-[#FAFAFF] transition-colors"
+                    href={`/preschools-in-${cityToSlug(primaryCity)}/`}
+                    className="text-[14px] font-semibold text-[#0E1C29] underline underline-offset-4 hover:text-[#774BE5] transition-colors"
                   >
-                    <p className="text-[15px] font-semibold text-[#0E1C29] line-clamp-2 group-hover:text-[#774BE5] transition-colors">
-                      {item.school}
-                    </p>
-                    {item.curriculum && (
-                      <p className="text-[13px] text-gray-400">{item.curriculum}</p>
-                    )}
-                    <p className="text-[13px] font-semibold text-[#774BE5] mt-1">
-                      {item.min_tuition || "N/A"} – {item.max_tuition || "N/A"}
-                    </p>
+                    See all
                   </Link>
-                ))}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => scrollSimilar(-1)}
+                      disabled={!canScrollLeft}
+                      aria-label="Scroll left"
+                      className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                    >
+                      <i className="ri-arrow-left-s-line text-[20px] text-[#0E1C29]" />
+                    </button>
+                    <button
+                      onClick={() => scrollSimilar(1)}
+                      disabled={!canScrollRight}
+                      aria-label="Scroll right"
+                      className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                    >
+                      <i className="ri-arrow-right-s-line text-[20px] text-[#0E1C29]" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative">
+                <div
+                  ref={scrollerRef}
+                  className="flex gap-3 md:gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-5 px-5 md:mx-0 md:px-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                >
+                  {similarSchools.slice(0, 8).map((item) => (
+                    <Link
+                      key={item.school}
+                      href={`/directory/${createSchoolSlug(item.school)}/`}
+                      className="group shrink-0 snap-start w-[72%] sm:w-[45%] md:w-[calc((100%-36px)/4)]"
+                    >
+                      <div className="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-gray-50 mb-3">
+                        <Image
+                          src={optimizeImageUrl(item.logo_banner) || "/images/Logo.png"}
+                          alt={item.school}
+                          fill
+                          sizes="(max-width: 640px) 72vw, (max-width: 768px) 45vw, 220px"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <p className="text-[15px] font-semibold text-[#0E1C29] line-clamp-2 group-hover:text-[#774BE5] transition-colors">
+                        {item.school}
+                      </p>
+                      {item.curriculum && (
+                        <p className="text-[13px] text-gray-400 mt-0.5 line-clamp-1">
+                          {item.curriculum}
+                        </p>
+                      )}
+                      <p className="text-[13px] font-semibold text-[#774BE5] mt-1">
+                        {item.min_tuition || "N/A"} – {item.max_tuition || "N/A"}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+
               </div>
             </div>
           )}

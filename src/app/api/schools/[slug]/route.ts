@@ -72,6 +72,15 @@ export async function GET(
       return NextResponse.json({ error: "School not found" }, { status: 404 });
     }
 
+    if (school.id) {
+      const { data: quickInfo } = await supabaseServer
+        .from("quick_info")
+        .select("*")
+        .eq("school_id", school.id)
+        .maybeSingle();
+      school.quick_info = quickInfo || null;
+    }
+
     const response = NextResponse.json({ school });
     response.headers.set("X-RateLimit-Limit", String(RATE_LIMITS.api.limit));
     response.headers.set("X-RateLimit-Remaining", String(result.remaining));

@@ -6,6 +6,18 @@ const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
 export const supabase = createClient(supabaseUrl, supabasePublishableKey);
 
 // Database types
+export interface QuickInfo {
+  school_id?: number;
+  school_name?: string;
+  tuition?: string;
+  curriculum?: string;
+  programs?: string;
+  schedule?: string;
+  class_size?: string;
+  extended_care?: string;
+  special_needs_support?: string;
+}
+
 export interface School {
   id?: number;
   school: string;
@@ -28,6 +40,7 @@ export interface School {
   updated_at?: string;
   location?: string;
   summary?: string;
+  quick_info?: QuickInfo | null;
 }
 
 export interface City {
