@@ -21,7 +21,9 @@ export default function HeroSearchBar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    SchoolService.searchCities("").then(setAvailableCities).catch(() => {});
+    SchoolService.searchCities("")
+      .then(setAvailableCities)
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -78,7 +80,9 @@ export default function HeroSearchBar() {
         if (match) {
           router.push(`/preschools-in-${cityToSlug(match.city)}/`);
         } else {
-          router.push(`/directory?search=${encodeURIComponent(searchQuery.trim())}`);
+          router.push(
+            `/directory?search=${encodeURIComponent(searchQuery.trim())}`,
+          );
         }
       }
     } finally {
@@ -87,10 +91,7 @@ export default function HeroSearchBar() {
   };
 
   return (
-    <form
-      onSubmit={handleSearch}
-      className="w-full mt-6 relative z-[1001]"
-    >
+    <form onSubmit={handleSearch} className="w-full mt-6 relative z-[1001]">
       <div className="bg-white rounded-full p-2 flex items-center gap-2 shadow-xl relative">
         <div className="pl-3 text-[#774BE5] shrink-0">
           <i className="ri-map-pin-2-fill text-xl" />
@@ -157,7 +158,11 @@ export default function HeroSearchBar() {
                       <div className="flex items-center gap-3">
                         {cityContent?.imageUrl ? (
                           <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 shadow-sm border border-gray-100">
-                            <img src={cityContent.imageUrl} alt={cityOption.city} className="w-full h-full object-cover" />
+                            <img
+                              src={cityContent.imageUrl}
+                              alt={cityOption.city}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
                         ) : (
                           <div className="w-14 h-14 rounded-lg bg-[#774BE5]/10 flex items-center justify-center shrink-0">

@@ -63,8 +63,7 @@ const cityContentMap: Record<string, CityContent> = {
           "Preschool tuition in Taguig typically ranges from around ₱80,000 to over ₱300,000 per year depending on the school, curriculum, and facilities.",
       },
       {
-        question:
-          "What types of preschool curriculum are available in Taguig?",
+        question: "What types of preschool curriculum are available in Taguig?",
         answer:
           "Preschools in Taguig offer a variety of programs including Montessori, play-based, and progressive approaches, especially in BGC.",
       },

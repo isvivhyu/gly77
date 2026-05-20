@@ -35,7 +35,9 @@ const SchoolDetails = () => {
   const [canScrollRight, setCanScrollRight] = useState(false);
 
   const primaryCity = school?.city?.split(",")[0]?.trim() || "";
-  const cityBreadcrumbLabel = primaryCity ? `Preschools in ${primaryCity}` : undefined;
+  const cityBreadcrumbLabel = primaryCity
+    ? `Preschools in ${primaryCity}`
+    : undefined;
   const cityBreadcrumbHref = primaryCity
     ? `/preschools-in-${cityToSlug(primaryCity)}/`
     : undefined;
@@ -74,7 +76,10 @@ const SchoolDetails = () => {
 
   const shareToFacebook = () => {
     const url = encodeURIComponent(getShareUrl());
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      "_blank",
+    );
   };
 
   const shareToMessenger = () => {
@@ -218,7 +223,9 @@ const SchoolDetails = () => {
           <Navbar textColor="black" sticky={false} />
         </div>
         <div className="max-w-[1120px] mx-auto px-5 mt-24 pb-40 text-center">
-          <h1 className="text-[24px] font-bold text-[#0E1C29] mb-4">School Not Found</h1>
+          <h1 className="text-[24px] font-bold text-[#0E1C29] mb-4">
+            School Not Found
+          </h1>
           <p className="text-[15px] text-gray-500 mb-6">
             The school you&apos;re looking for doesn&apos;t exist.
           </p>
@@ -246,7 +253,6 @@ const SchoolDetails = () => {
 
         {/* Main content column */}
         <div className="max-w-[1120px] mx-auto px-5 pb-32 md:pb-20">
-
           {/* ── Breadcrumb ──────────────────────────────────────────── */}
           <div className="mt-6 mb-8">
             <Breadcrumbs
@@ -269,7 +275,9 @@ const SchoolDetails = () => {
               </h1>
               <button
                 className="shrink-0 mt-1 w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 text-[#374151] hover:border-[#774BE5] hover:text-[#774BE5] transition-colors"
-                onClick={() => (!isDesktop ? handleNativeShare() : setShowShareModal(true))}
+                onClick={() =>
+                  !isDesktop ? handleNativeShare() : setShowShareModal(true)
+                }
                 aria-label="Share school profile"
               >
                 <i className="ri-share-2-line text-[17px]" />
@@ -279,7 +287,9 @@ const SchoolDetails = () => {
             {/* City + updated */}
             <div className="flex items-center gap-1.5 mt-3 flex-wrap">
               <i className="ri-map-pin-2-line text-[#774BE5] text-[14px]" />
-              <span className="text-[14px] text-[#374151]">{school.city || "City"}</span>
+              <span className="text-[14px] text-[#374151]">
+                {school.city || "City"}
+              </span>
               <span className="text-gray-200 mx-1">|</span>
               <span className="text-[13px] text-gray-400">
                 Updated {formatLastUpdated(school.updated_at)}
@@ -344,7 +354,10 @@ const SchoolDetails = () => {
                   { label: "Programs", value: school.quick_info.programs },
                   { label: "Schedule", value: school.quick_info.schedule },
                   { label: "Class Size", value: school.quick_info.class_size },
-                  { label: "Extended Care", value: school.quick_info.extended_care },
+                  {
+                    label: "Extended Care",
+                    value: school.quick_info.extended_care,
+                  },
                   {
                     label: "Special Needs Support",
                     value: school.quick_info.special_needs_support,
@@ -398,7 +411,9 @@ const SchoolDetails = () => {
                   key={label}
                   className="flex flex-col gap-1.5 py-5 border-b border-gray-100"
                 >
-                  <dt className="text-[13px] text-gray-500 font-medium">{label}</dt>
+                  <dt className="text-[13px] text-gray-500 font-medium">
+                    {label}
+                  </dt>
                   <dd className="text-[16px] md:text-[17px] text-[#0E1C29] leading-snug">
                     {value || "Not specified"}
                   </dd>
@@ -409,7 +424,9 @@ const SchoolDetails = () => {
 
           {/* ── Location ────────────────────────────────────────────── */}
           <div className="pb-14">
-            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-5">Location</h2>
+            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-5">
+              Location
+            </h2>
             <div className="flex items-start gap-2">
               <i className="ri-map-pin-line text-[#774BE5] text-[15px] mt-0.5 shrink-0" />
               <p className="text-[15px] text-[#374151] leading-relaxed">
@@ -439,21 +456,36 @@ const SchoolDetails = () => {
 
           {/* ── Contact (desktop only) ───────────────────────────────── */}
           <div className="hidden md:block pb-14">
-            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-2">Contact School</h2>
+            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-2">
+              Contact School
+            </h2>
             <p className="text-[13px] text-gray-400 mb-5">
-              Confirm fees, schedules, and availability directly with the school.
+              Confirm fees, schedules, and availability directly with the
+              school.
             </p>
             <div className="flex flex-wrap gap-2.5">
               {[
-                { label: "Call", icon: "ri-phone-line", href: `tel:${phoneNumber}` },
-                { label: "Text", icon: "ri-message-2-line", href: `sms:${phoneNumber}` },
+                {
+                  label: "Call",
+                  icon: "ri-phone-line",
+                  href: `tel:${phoneNumber}`,
+                },
+                {
+                  label: "Text",
+                  icon: "ri-message-2-line",
+                  href: `sms:${phoneNumber}`,
+                },
                 {
                   label: "Facebook",
                   icon: "ri-facebook-line",
                   href: school.facebook || "#",
                   external: true,
                 },
-                { label: "Email", icon: "ri-mail-line", href: `mailto:${school.email || ""}` },
+                {
+                  label: "Email",
+                  icon: "ri-mail-line",
+                  href: `mailto:${school.email || ""}`,
+                },
                 {
                   label: "Website",
                   icon: "ri-global-line",
@@ -464,7 +496,9 @@ const SchoolDetails = () => {
                 <Link
                   key={label}
                   href={href}
-                  {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  {...(external
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                   className="inline-flex items-center gap-2 border border-gray-200 hover:border-[#774BE5] hover:text-[#774BE5] text-[#0E1C29] rounded-full px-5 py-2 text-[14px] font-medium transition-colors"
                 >
                   <i className={`${icon} text-[15px]`} />
@@ -480,8 +514,8 @@ const SchoolDetails = () => {
               Report a Correction
             </h2>
             <p className="text-[15px] text-[#4B5563] mb-5 leading-relaxed max-w-[620px]">
-              Notice outdated or incorrect information? Send us an update and we&apos;ll
-              review it.
+              Notice outdated or incorrect information? Send us an update and
+              we&apos;ll review it.
             </p>
             <Link
               href="https://web.facebook.com/people/Aralya/61578164295126"
@@ -541,7 +575,10 @@ const SchoolDetails = () => {
                     >
                       <div className="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-gray-50 mb-3">
                         <Image
-                          src={optimizeImageUrl(item.logo_banner) || "/images/Logo.png"}
+                          src={
+                            optimizeImageUrl(item.logo_banner) ||
+                            "/images/Logo.png"
+                          }
                           alt={item.school}
                           fill
                           sizes="(max-width: 640px) 72vw, (max-width: 768px) 45vw, 220px"
@@ -557,12 +594,12 @@ const SchoolDetails = () => {
                         </p>
                       )}
                       <p className="text-[13px] font-semibold text-[#774BE5] mt-1">
-                        {item.min_tuition || "N/A"} – {item.max_tuition || "N/A"}
+                        {item.min_tuition || "N/A"} –{" "}
+                        {item.max_tuition || "N/A"}
                       </p>
                     </Link>
                   ))}
                 </div>
-
               </div>
             </div>
           )}
@@ -580,7 +617,9 @@ const SchoolDetails = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-[17px] font-semibold text-[#0E1C29]">Share this school</h3>
+              <h3 className="text-[17px] font-semibold text-[#0E1C29]">
+                Share this school
+              </h3>
               <button
                 onClick={() => setShowShareModal(false)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
@@ -593,7 +632,9 @@ const SchoolDetails = () => {
             <div className="flex items-center gap-3 mb-6 pb-5 border-b border-gray-100">
               <div className="w-14 h-14 rounded-lg border border-gray-100 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden">
                 <Image
-                  src={optimizeImageUrl(school.logo_banner) || "/images/Logo.png"}
+                  src={
+                    optimizeImageUrl(school.logo_banner) || "/images/Logo.png"
+                  }
                   alt={school.school || "School Logo"}
                   width={56}
                   height={56}
@@ -601,8 +642,12 @@ const SchoolDetails = () => {
                 />
               </div>
               <div className="min-w-0">
-                <p className="text-[15px] font-semibold text-[#0E1C29] truncate">{school.school}</p>
-                <p className="text-[13px] text-gray-400 mt-0.5">{school.city}</p>
+                <p className="text-[15px] font-semibold text-[#0E1C29] truncate">
+                  {school.school}
+                </p>
+                <p className="text-[13px] text-gray-400 mt-0.5">
+                  {school.city}
+                </p>
               </div>
             </div>
 
@@ -614,9 +659,15 @@ const SchoolDetails = () => {
                   className="bg-[#774BE5] hover:bg-[#6B3FD6] text-white rounded-full px-4 py-2.5 flex items-center justify-center gap-2 text-[14px] font-semibold transition-colors"
                 >
                   {linkCopied ? (
-                    <><i className="ri-check-line" /><span>Copied!</span></>
+                    <>
+                      <i className="ri-check-line" />
+                      <span>Copied!</span>
+                    </>
                   ) : (
-                    <><i className="ri-link" /><span>Copy Link</span></>
+                    <>
+                      <i className="ri-link" />
+                      <span>Copy Link</span>
+                    </>
                   )}
                 </button>
                 <button
@@ -655,9 +706,15 @@ const SchoolDetails = () => {
                   className="w-full flex items-center justify-center gap-2 border border-gray-200 rounded-full px-4 py-2.5 text-[14px] font-medium text-[#0E1C29] hover:bg-gray-50 transition-colors"
                 >
                   {linkCopied ? (
-                    <><i className="ri-check-line" /><span>Link Copied!</span></>
+                    <>
+                      <i className="ri-check-line" />
+                      <span>Link Copied!</span>
+                    </>
                   ) : (
-                    <><i className="ri-link" /><span>Copy Link</span></>
+                    <>
+                      <i className="ri-link" />
+                      <span>Copy Link</span>
+                    </>
                   )}
                 </button>
               </div>
@@ -707,7 +764,9 @@ const SchoolDetails = () => {
 
               <div className="px-5 pt-3 pb-10">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-[17px] font-semibold text-[#0E1C29]">Contact School</h4>
+                  <h4 className="text-[17px] font-semibold text-[#0E1C29]">
+                    Contact School
+                  </h4>
                   <button
                     onClick={() => setIsContactSheetOpen(false)}
                     className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center"
@@ -728,9 +787,13 @@ const SchoolDetails = () => {
                       <i className="ri-phone-line text-green-600 text-[18px]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-semibold text-[#0E1C29]">Call</p>
+                      <p className="text-[15px] font-semibold text-[#0E1C29]">
+                        Call
+                      </p>
                       {phoneNumber && (
-                        <p className="text-[13px] text-gray-400 truncate">{phoneNumber}</p>
+                        <p className="text-[13px] text-gray-400 truncate">
+                          {phoneNumber}
+                        </p>
                       )}
                     </div>
                     <i className="ri-arrow-right-s-line text-gray-300 text-xl" />
@@ -745,9 +808,13 @@ const SchoolDetails = () => {
                       <i className="ri-message-2-line text-blue-500 text-[18px]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-semibold text-[#0E1C29]">Text</p>
+                      <p className="text-[15px] font-semibold text-[#0E1C29]">
+                        Text
+                      </p>
                       {phoneNumber && (
-                        <p className="text-[13px] text-gray-400 truncate">{phoneNumber}</p>
+                        <p className="text-[13px] text-gray-400 truncate">
+                          {phoneNumber}
+                        </p>
                       )}
                     </div>
                     <i className="ri-arrow-right-s-line text-gray-300 text-xl" />
@@ -764,8 +831,12 @@ const SchoolDetails = () => {
                       <i className="ri-facebook-fill text-[#1877F2] text-[18px]" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[15px] font-semibold text-[#0E1C29]">Facebook</p>
-                      <p className="text-[13px] text-gray-400">Visit Facebook page</p>
+                      <p className="text-[15px] font-semibold text-[#0E1C29]">
+                        Facebook
+                      </p>
+                      <p className="text-[13px] text-gray-400">
+                        Visit Facebook page
+                      </p>
                     </div>
                     <i className="ri-arrow-right-s-line text-gray-300 text-xl" />
                   </Link>
@@ -779,9 +850,13 @@ const SchoolDetails = () => {
                       <i className="ri-mail-line text-orange-500 text-[18px]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-semibold text-[#0E1C29]">Email</p>
+                      <p className="text-[15px] font-semibold text-[#0E1C29]">
+                        Email
+                      </p>
                       {school.email && (
-                        <p className="text-[13px] text-gray-400 truncate">{school.email}</p>
+                        <p className="text-[13px] text-gray-400 truncate">
+                          {school.email}
+                        </p>
                       )}
                     </div>
                     <i className="ri-arrow-right-s-line text-gray-300 text-xl" />
@@ -798,9 +873,13 @@ const SchoolDetails = () => {
                       <i className="ri-global-line text-[#774BE5] text-[18px]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-semibold text-[#0E1C29]">Website</p>
+                      <p className="text-[15px] font-semibold text-[#0E1C29]">
+                        Website
+                      </p>
                       {school.website && (
-                        <p className="text-[13px] text-gray-400 truncate">{school.website}</p>
+                        <p className="text-[13px] text-gray-400 truncate">
+                          {school.website}
+                        </p>
                       )}
                     </div>
                     <i className="ri-arrow-right-s-line text-gray-300 text-xl" />
@@ -808,7 +887,8 @@ const SchoolDetails = () => {
                 </div>
 
                 <p className="text-[12px] text-gray-400 mt-2 leading-relaxed">
-                  Confirm fees, schedules, and availability directly with the school.
+                  Confirm fees, schedules, and availability directly with the
+                  school.
                 </p>
               </div>
             </div>

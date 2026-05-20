@@ -194,7 +194,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // City pages - use SEO city landing URLs
   const cities = await getCachedCities();
   const cityPages: MetadataRoute.Sitemap = cities.map((cityData) => ({
-    url: ensureTrailingSlash(`${baseUrl}/preschools-in-${cityToSlug(cityData.city)}`),
+    url: ensureTrailingSlash(
+      `${baseUrl}/preschools-in-${cityToSlug(cityData.city)}`,
+    ),
     lastModified: cityData.updated_at
       ? new Date(cityData.updated_at)
       : new Date(),

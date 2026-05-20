@@ -72,8 +72,12 @@ export default function CityPageContent({
   );
 
   // Keep refs in sync with latest state (avoids stale closures in drag handler)
-  useEffect(() => { priceRangeRef.current = priceRange; }, [priceRange]);
-  useEffect(() => { maxSchoolPriceRef.current = maxSchoolPrice; }, [maxSchoolPrice]);
+  useEffect(() => {
+    priceRangeRef.current = priceRange;
+  }, [priceRange]);
+  useEffect(() => {
+    maxSchoolPriceRef.current = maxSchoolPrice;
+  }, [maxSchoolPrice]);
 
   // Global drag handler for the price slider
   useEffect(() => {
@@ -82,14 +86,23 @@ export default function CityPageContent({
       const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
       const rect = sliderRef.current.getBoundingClientRect();
       const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-      const value = Math.round((pct * maxSchoolPriceRef.current) / 10000) * 10000;
+      const value =
+        Math.round((pct * maxSchoolPriceRef.current) / 10000) * 10000;
       if (draggingRef.current === "min") {
-        setPriceRange((prev) => ({ ...prev, min: Math.min(value, prev.max - 10000) }));
+        setPriceRange((prev) => ({
+          ...prev,
+          min: Math.min(value, prev.max - 10000),
+        }));
       } else {
-        setPriceRange((prev) => ({ ...prev, max: Math.max(value, prev.min + 10000) }));
+        setPriceRange((prev) => ({
+          ...prev,
+          max: Math.max(value, prev.min + 10000),
+        }));
       }
     };
-    const handleUp = () => { draggingRef.current = null; };
+    const handleUp = () => {
+      draggingRef.current = null;
+    };
     document.addEventListener("mousemove", handleMove);
     document.addEventListener("mouseup", handleUp);
     document.addEventListener("touchmove", handleMove, { passive: true });
@@ -199,7 +212,6 @@ export default function CityPageContent({
         setMaxSchoolPrice(rounded);
         setPriceRange({ min: 0, max: rounded });
 
-
         // Extract curriculums from schools
         const curriculumCounts: Record<string, number> = {};
         citySchools.forEach((school) => {
@@ -294,8 +306,7 @@ export default function CityPageContent({
     return () => observer.disconnect();
   }, [hasMore, isLoadingMore, loading, loadMore]);
 
-  const isPriceFiltered =
-    priceRange.min > 0 || priceRange.max < maxSchoolPrice;
+  const isPriceFiltered = priceRange.min > 0 || priceRange.max < maxSchoolPrice;
   const hasActiveFilters = !!(curriculumFilter || isPriceFiltered);
 
   return (
@@ -436,8 +447,8 @@ export default function CityPageContent({
                     </span>
                   </div>
                   <span className="text-[14px] font-semibold text-[#774BE5]">
-                    ₱{priceRange.min.toLocaleString()} –{" "}
-                    ₱{priceRange.max.toLocaleString()}
+                    ₱{priceRange.min.toLocaleString()} – ₱
+                    {priceRange.max.toLocaleString()}
                   </span>
                 </div>
 
@@ -458,11 +469,17 @@ export default function CityPageContent({
                   />
                   <div
                     className="absolute w-6 h-6 bg-white border-2 border-[#774BE5] rounded-full shadow-sm pointer-events-none"
-                    style={{ left: `calc(${(priceRange.min / maxSchoolPrice) * 100}% - 12px)`, zIndex: 10 }}
+                    style={{
+                      left: `calc(${(priceRange.min / maxSchoolPrice) * 100}% - 12px)`,
+                      zIndex: 10,
+                    }}
                   />
                   <div
                     className="absolute w-6 h-6 bg-white border-2 border-[#774BE5] rounded-full shadow-sm pointer-events-none"
-                    style={{ left: `calc(${(priceRange.max / maxSchoolPrice) * 100}% - 12px)`, zIndex: 10 }}
+                    style={{
+                      left: `calc(${(priceRange.max / maxSchoolPrice) * 100}% - 12px)`,
+                      zIndex: 10,
+                    }}
                   />
                 </div>
 
@@ -526,7 +543,10 @@ export default function CityPageContent({
                 <div className="w-16 h-16 rounded-full border-4 border-[#774BE5]/20 border-t-[#774BE5] animate-spin" />
                 <div
                   className="absolute inset-0 w-16 h-16 rounded-full border-4 border-transparent border-b-[#9B6EF3]/50 animate-spin"
-                  style={{ animationDirection: "reverse", animationDuration: "0.8s" }}
+                  style={{
+                    animationDirection: "reverse",
+                    animationDuration: "0.8s",
+                  }}
                 />
               </div>
               <p className="text-[#774BE5] font-medium text-[18px] mt-4 animate-pulse">
@@ -574,8 +594,9 @@ export default function CityPageContent({
                     schoolName={school.school}
                     location={school.city}
                     tags={
-                      school.curriculum_tags?.split(", ").map((t) => t.trim()) ||
-                      []
+                      school.curriculum_tags
+                        ?.split(", ")
+                        .map((t) => t.trim()) || []
                     }
                     priceRange={`${school.min_tuition} - ${school.max_tuition}${
                       school.min_tuition?.toLowerCase().includes("/month") ||
@@ -605,10 +626,10 @@ export default function CityPageContent({
       </section>
 
       {/* About + FAQ — unified section */}
-      {(cityContent.about || (cityContent.faqs && cityContent.faqs.length > 0)) && (
+      {(cityContent.about ||
+        (cityContent.faqs && cityContent.faqs.length > 0)) && (
         <section className="w-full bg-[#F9F9FB] border-t border-gray-100">
           <div className="max-w-7xl mx-auto px-5 md:px-10 py-12 space-y-12">
-
             {cityContent.about && (
               <div>
                 <h2 className="text-[22px] font-semibold text-[#0E1C29] mb-4">
@@ -655,7 +676,10 @@ export default function CityPageContent({
                   {cityContent.faqs.map((faq, i) => {
                     const isOpen = openFaqIndex === i;
                     return (
-                      <div key={i} className="border-b border-gray-100 last:border-0">
+                      <div
+                        key={i}
+                        className="border-b border-gray-100 last:border-0"
+                      >
                         <button
                           onClick={() => setOpenFaqIndex(isOpen ? null : i)}
                           className={`w-full flex items-center justify-between gap-4 px-5 text-left hover:bg-gray-50 transition-colors ${isOpen ? "pt-4 pb-2" : "py-4"}`}
@@ -680,7 +704,6 @@ export default function CityPageContent({
                 </div>
               </div>
             )}
-
           </div>
         </section>
       )}
@@ -696,7 +719,8 @@ export default function CityPageContent({
               {relatedCitySlugs.map((slug) => {
                 const content = getCityContent(slug);
                 const cityData = otherCities.find((c) => c.slug === slug);
-                const displayName = slug.charAt(0).toUpperCase() + slug.slice(1);
+                const displayName =
+                  slug.charAt(0).toUpperCase() + slug.slice(1);
                 return (
                   <a
                     key={slug}
@@ -722,7 +746,8 @@ export default function CityPageContent({
                         </p>
                         {cityData && (
                           <p className="text-white/70 text-[13px] mt-0.5">
-                            {cityData.count} school{cityData.count !== 1 ? "s" : ""}
+                            {cityData.count} school
+                            {cityData.count !== 1 ? "s" : ""}
                           </p>
                         )}
                       </div>
@@ -737,7 +762,6 @@ export default function CityPageContent({
           </div>
         </section>
       )}
-
     </>
   );
 }

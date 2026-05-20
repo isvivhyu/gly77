@@ -35,7 +35,10 @@ function buildBreadcrumbsFromPath(
   const items: BreadcrumbItem[] = [{ label: "Home", href: "/" }];
 
   // Remove leading/trailing slashes and split
-  const segments = pathname.replace(/^\/|\/$/g, "").split("/").filter(Boolean);
+  const segments = pathname
+    .replace(/^\/|\/$/g, "")
+    .split("/")
+    .filter(Boolean);
 
   if (segments.length === 0) {
     return [];
@@ -106,8 +109,7 @@ export default function Breadcrumbs({
   className = "",
 }: BreadcrumbsProps) {
   const pathname = usePathname();
-  const items =
-    customItems ?? buildBreadcrumbsFromPath(pathname, currentLabel);
+  const items = customItems ?? buildBreadcrumbsFromPath(pathname, currentLabel);
 
   if (items.length <= 1) {
     return null;
@@ -118,7 +120,8 @@ export default function Breadcrumbs({
     variant === "light"
       ? "text-white hover:text-white"
       : "text-[#774BE5] hover:text-[#6B3FD6]";
-  const separatorColor = variant === "light" ? "text-white/60" : "text-gray-400";
+  const separatorColor =
+    variant === "light" ? "text-white/60" : "text-gray-400";
 
   return (
     <nav

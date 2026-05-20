@@ -58,7 +58,6 @@ export default function SchoolDetailLoading() {
           <div className="w-48 h-12 bg-gray-200 rounded-full animate-pulse mx-auto"></div>
         </div>
       </section>
-
     </>
   );
 }

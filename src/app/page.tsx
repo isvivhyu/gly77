@@ -131,15 +131,22 @@ export default function Home() {
             across websites and parents have to contact schools one by one just
             to compare options. Aralya is built to make that easier by helping
             parents compare{" "}
-            <Link href="/preschools-in-makati" className="text-[#774BE5] hover:underline font-semibold">
+            <Link
+              href="/preschools-in-makati"
+              className="text-[#774BE5] hover:underline font-semibold"
+            >
               preschools in Makati
             </Link>{" "}
             and{" "}
-            <Link href="/preschools-in-taguig" className="text-[#774BE5] hover:underline font-semibold">
+            <Link
+              href="/preschools-in-taguig"
+              className="text-[#774BE5] hover:underline font-semibold"
+            >
               preschools in Taguig
             </Link>{" "}
-            based on tuition, curriculum, and key details. As Aralya grows, the goal is to make
-            preschool research simpler, clearer, and more useful for families.
+            based on tuition, curriculum, and key details. As Aralya grows, the
+            goal is to make preschool research simpler, clearer, and more useful
+            for families.
           </p>
         </div>
       </section>
