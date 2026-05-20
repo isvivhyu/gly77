@@ -369,13 +369,13 @@ const SchoolDetails = () => {
           )}
 
           {/* ── About [School Name] ──────────────────────────────────── */}
-          {school.summary && (
+          {school.about && (
             <div className="pb-16">
               <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-6">
                 About {school.school}
               </h2>
               <p className="text-[17px] md:text-[18px] text-[#374151] leading-[1.8] max-w-[760px]">
-                {school.summary}
+                {school.about}
               </p>
             </div>
           )}
@@ -383,7 +383,7 @@ const SchoolDetails = () => {
           {/* ── School Overview ─────────────────────────────────────── */}
           <div className="pb-16">
             <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-8">
-              School Overview
+              Program Overview
             </h2>
             <dl className="grid md:grid-cols-2 grid-cols-1 gap-x-16">
               {[
@@ -476,26 +476,21 @@ const SchoolDetails = () => {
 
           {/* ── Accuracy ─────────────────────────────────────────────── */}
           <div className="pb-14">
-            <div className="flex items-start gap-3">
-              <i className="ri-edit-box-line text-gray-400 text-[18px] mt-0.5 shrink-0" />
-              <div>
-                <p className="text-[15px] font-semibold text-[#0E1C29] mb-1">
-                  Help us keep this information accurate
-                </p>
-                <p className="text-[14px] text-[#4B5563] mb-4 leading-relaxed">
-                  If you notice outdated or incorrect details, message us on Facebook and
-                  we&apos;ll review it promptly.
-                </p>
-                <Link
-                  href="https://web.facebook.com/people/Aralya/61578164295126"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#774BE5] border border-[#774BE5] rounded-full px-5 py-2 hover:bg-[#774BE5] hover:text-white transition-colors"
-                >
-                  Report a Correction
-                </Link>
-              </div>
-            </div>
+            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-3">
+              Report a Correction
+            </h2>
+            <p className="text-[15px] text-[#4B5563] mb-5 leading-relaxed max-w-[620px]">
+              Notice outdated or incorrect information? Send us an update and we&apos;ll
+              review it.
+            </p>
+            <Link
+              href="https://web.facebook.com/people/Aralya/61578164295126"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#774BE5] border border-[#774BE5] rounded-full px-5 py-2 hover:bg-[#774BE5] hover:text-white transition-colors"
+            >
+              Send an Update
+            </Link>
           </div>
 
           {/* ── Similar Schools ──────────────────────────────────────── */}

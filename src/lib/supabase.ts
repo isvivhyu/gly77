@@ -40,6 +40,7 @@ export interface School {
   updated_at?: string;
   location?: string;
   summary?: string;
+  about?: string;
   quick_info?: QuickInfo | null;
 }
 
