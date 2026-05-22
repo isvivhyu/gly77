@@ -339,7 +339,7 @@ export default function CityPageContent({
           <div className="max-w-7xl mx-auto px-5 md:px-10 pb-8">
             <div className="w-full h-56 md:h-[380px] overflow-hidden rounded-2xl">
               <img
-                src={cityContent.imageUrl}
+                src={optimizeImageUrl(cityContent.imageUrl, 1920)}
                 alt={`Preschools in ${cityName}`}
                 className="w-full h-full object-cover"
               />
@@ -729,7 +729,7 @@ export default function CityPageContent({
                   >
                     {content.imageUrl ? (
                       <img
-                        src={content.imageUrl}
+                        src={optimizeImageUrl(content.imageUrl, 800)}
                         alt={`Preschools in ${displayName}`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />

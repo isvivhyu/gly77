@@ -6,6 +6,7 @@ import { ButtonWithLoading } from "@/components/LoadingSpinner";
 import { SchoolService } from "@/lib/schoolService";
 import { cityToSlug } from "@/lib/cityUtils";
 import { getCityContent } from "@/lib/cityContent";
+import { optimizeImageUrl } from "@/lib/cloudinary";
 
 export default function HeroSearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -159,7 +160,7 @@ export default function HeroSearchBar() {
                         {cityContent?.imageUrl ? (
                           <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 shadow-sm border border-gray-100">
                             <img
-                              src={cityContent.imageUrl}
+                              src={optimizeImageUrl(cityContent.imageUrl, 120)}
                               alt={cityOption.city}
                               className="w-full h-full object-cover"
                             />

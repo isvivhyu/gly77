@@ -4,6 +4,8 @@ import Link from "next/link";
 import HeroSearchBar from "@/components/HeroSearchBar";
 import { getCityContent } from "@/lib/cityContent";
 
+import { optimizeImageUrl } from "@/lib/cloudinary";
+
 export const metadata: Metadata = {
   title: "Preschools in Makati & Taguig | Compare Schools | Aralya",
   description:
@@ -57,7 +59,7 @@ export default function Home() {
             className="group relative w-full sm:w-1/2 h-64 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
           >
             <img
-              src={getCityContent("makati").imageUrl}
+              src={optimizeImageUrl(getCityContent("makati").imageUrl, 800)}
               alt="Preschools in Makati"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
@@ -78,7 +80,7 @@ export default function Home() {
             className="group relative w-full sm:w-1/2 h-64 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
           >
             <img
-              src={getCityContent("taguig").imageUrl}
+              src={optimizeImageUrl(getCityContent("taguig").imageUrl, 800)}
               alt="Preschools in Taguig"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />

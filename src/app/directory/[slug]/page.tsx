@@ -323,7 +323,7 @@ const SchoolDetails = () => {
           <div className="pb-12">
             <div className="relative w-full h-72 md:h-[460px] rounded-2xl overflow-hidden bg-gray-50">
               <Image
-                src={optimizeImageUrl(school.logo_banner) || "/images/Logo.png"}
+                src={optimizeImageUrl(school.logo_banner, 1920) || "/images/Logo.png"}
                 alt={school.school || "School Logo"}
                 fill
                 sizes="(max-width: 768px) 100vw, 960px"
@@ -633,7 +633,7 @@ const SchoolDetails = () => {
               <div className="w-14 h-14 rounded-lg border border-gray-100 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden">
                 <Image
                   src={
-                    optimizeImageUrl(school.logo_banner) || "/images/Logo.png"
+                    optimizeImageUrl(school.logo_banner, 120) || "/images/Logo.png"
                   }
                   alt={school.school || "School Logo"}
                   width={56}
