@@ -321,13 +321,13 @@ const SchoolDetails = () => {
 
           {/* ── School image / logo (large, fills area) ──────────────── */}
           <div className="pb-12">
-            <div className="relative w-full h-72 md:h-[460px] rounded-2xl overflow-hidden bg-gray-50">
+            <div className="relative w-full h-72 md:h-[460px] rounded-2xl overflow-hidden bg-white border border-gray-100">
               <Image
                 src={optimizeImageUrl(school.logo_banner, 1920) || "/images/Logo.png"}
                 alt={school.school || "School Logo"}
                 fill
                 sizes="(max-width: 768px) 100vw, 960px"
-                className="object-cover"
+                className="object-contain"
                 priority
               />
               {/* Verified badge */}
@@ -573,7 +573,7 @@ const SchoolDetails = () => {
                       href={`/directory/${createSchoolSlug(item.school)}/`}
                       className="group shrink-0 snap-start w-[72%] sm:w-[45%] md:w-[calc((100%-36px)/4)]"
                     >
-                      <div className="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-gray-50 mb-3">
+                      <div className="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-white border border-gray-100 mb-3">
                         <Image
                           src={
                             optimizeImageUrl(item.logo_banner) ||
@@ -630,7 +630,7 @@ const SchoolDetails = () => {
 
             {/* School preview */}
             <div className="flex items-center gap-3 mb-6 pb-5 border-b border-gray-100">
-              <div className="w-14 h-14 rounded-lg border border-gray-100 bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden">
+              <div className="w-14 h-14 rounded-lg border border-gray-100 bg-white flex items-center justify-center shrink-0 overflow-hidden">
                 <Image
                   src={
                     optimizeImageUrl(school.logo_banner, 120) || "/images/Logo.png"
