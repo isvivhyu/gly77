@@ -191,10 +191,10 @@ const SchoolDetails = () => {
   if (loading) {
     return (
       <div className="w-full bg-white min-h-screen">
-        <div className="w-full px-5 md:px-10">
-          <Navbar textColor="black" sticky={false} />
+        <div className="w-full">
+          <Navbar textColor={isDesktop ? "black" : "white"} sticky={!isDesktop} />
         </div>
-        <div className="max-w-[1120px] mx-auto px-5 mt-10 pb-40">
+        <div className="max-w-[1120px] mx-auto px-5 pt-24 md:pt-0 md:mt-16 pb-40">
           <SkeletonLoader className="h-4 w-56 mb-8" />
           <SkeletonLoader className="h-9 w-3/4 mb-3" />
           <SkeletonLoader className="h-5 w-48 mb-3" />
@@ -219,10 +219,10 @@ const SchoolDetails = () => {
   if (!school) {
     return (
       <div className="w-full bg-white min-h-screen">
-        <div className="w-full px-5 md:px-10">
-          <Navbar textColor="black" sticky={false} />
+        <div className="w-full">
+          <Navbar textColor={isDesktop ? "black" : "white"} sticky={!isDesktop} />
         </div>
-        <div className="max-w-[1120px] mx-auto px-5 mt-24 pb-40 text-center">
+        <div className="max-w-[1120px] mx-auto px-5 pt-24 md:pt-0 md:mt-24 pb-40 text-center">
           <h1 className="text-[24px] font-bold text-[#0E1C29] mb-4">
             School Not Found
           </h1>
@@ -246,15 +246,15 @@ const SchoolDetails = () => {
   return (
     <>
       <div className="w-full bg-white">
-        {/* Navbar – not sticky on this page */}
-        <div className="w-full px-5 md:px-10">
-          <Navbar textColor="black" sticky={false} />
+        {/* Navbar */}
+        <div className="w-full">
+          <Navbar textColor={isDesktop ? "black" : "white"} sticky={!isDesktop} />
         </div>
 
         {/* Main content column */}
-        <div className="max-w-[1120px] mx-auto px-5 pb-32 md:pb-20">
+        <div className="max-w-[1120px] mx-auto px-5 pt-24 md:pt-0 pb-44 md:pb-36">
           {/* ── Breadcrumb ──────────────────────────────────────────── */}
-          <div className="mt-6 mb-8">
+          <div className="mt-2 mb-8">
             <Breadcrumbs
               items={[
                 { label: "Home", href: "/" },
@@ -270,8 +270,15 @@ const SchoolDetails = () => {
           <div className="pb-10">
             {/* Name + share */}
             <div className="flex items-start justify-between gap-4">
-              <h1 className="text-[28px] md:text-[36px] font-bold text-[#0E1C29] leading-tight tracking-tight">
-                {school.school}
+              <h1 className="inline-flex items-center gap-2 text-[28px] md:text-[36px] font-bold text-[#0E1C29] leading-tight tracking-tight flex-wrap">
+                <span>{school.school}</span>
+                <span className="relative group inline-flex items-center">
+                  <i className="ri-verified-badge-fill text-[#774BE5] text-[20px] md:text-[24px] cursor-pointer" />
+                  <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[13px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                    Verified by Aralya
+                    <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-[#774BE5]" />
+                  </span>
+                </span>
               </h1>
               <button
                 className="shrink-0 mt-1 w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 text-[#374151] hover:border-[#774BE5] hover:text-[#774BE5] transition-colors"
@@ -300,7 +307,7 @@ const SchoolDetails = () => {
             <p className="text-[20px] font-semibold text-[#0E1C29] mt-4">
               {school.min_tuition || "N/A"} – {school.max_tuition || "N/A"}
               {school.min_tuition?.toLowerCase().includes("/month") ||
-              school.max_tuition?.toLowerCase().includes("/month")
+                school.max_tuition?.toLowerCase().includes("/month")
                 ? ""
                 : " / year"}
             </p>
@@ -330,21 +337,13 @@ const SchoolDetails = () => {
                 className="object-contain"
                 priority
               />
-              {/* Verified badge */}
-              <span className="absolute bottom-4 right-4 group inline-flex">
-                <i className="ri-verified-badge-fill text-[#774BE5] text-2xl cursor-pointer drop-shadow-md" />
-                <div className="absolute bottom-full right-0 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[13px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                  Verified by Aralya
-                  <div className="absolute top-full right-4 -mt-1 border-4 border-transparent border-t-[#774BE5]" />
-                </div>
-              </span>
             </div>
           </div>
 
           {/* ── Quick Info ───────────────────────────────────────────── */}
           {school.quick_info && (
             <div className="pb-16">
-              <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-8">
+              <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-3">
                 Quick Info
               </h2>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-16">
@@ -384,7 +383,7 @@ const SchoolDetails = () => {
           {/* ── About [School Name] ──────────────────────────────────── */}
           {school.about && (
             <div className="pb-16">
-              <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-6">
+              <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-3">
                 About {school.school}
               </h2>
               <p className="text-[17px] md:text-[18px] text-[#374151] leading-[1.8] max-w-[760px]">
@@ -395,7 +394,7 @@ const SchoolDetails = () => {
 
           {/* ── School Overview ─────────────────────────────────────── */}
           <div className="pb-16">
-            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-8">
+            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-3">
               Program Overview
             </h2>
             <dl className="grid md:grid-cols-2 grid-cols-1 gap-x-16">
@@ -424,7 +423,7 @@ const SchoolDetails = () => {
 
           {/* ── Location ────────────────────────────────────────────── */}
           <div className="pb-14">
-            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-5">
+            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-3">
               Location
             </h2>
             <div className="flex items-start gap-2">
@@ -456,7 +455,7 @@ const SchoolDetails = () => {
 
           {/* ── Contact (desktop only) ───────────────────────────────── */}
           <div className="hidden md:block pb-14">
-            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-2">
+            <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-3">
               Contact School
             </h2>
             <p className="text-[13px] text-gray-400 mb-5">
@@ -534,32 +533,12 @@ const SchoolDetails = () => {
                 <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight">
                   Similar Preschools in {primaryCity}
                 </h2>
-                <div className="flex items-center gap-3 shrink-0">
-                  <Link
-                    href={`/preschools-in-${cityToSlug(primaryCity)}/`}
-                    className="text-[14px] font-semibold text-[#0E1C29] underline underline-offset-4 hover:text-[#774BE5] transition-colors"
-                  >
-                    See all
-                  </Link>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => scrollSimilar(-1)}
-                      disabled={!canScrollLeft}
-                      aria-label="Scroll left"
-                      className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition"
-                    >
-                      <i className="ri-arrow-left-s-line text-[20px] text-[#0E1C29]" />
-                    </button>
-                    <button
-                      onClick={() => scrollSimilar(1)}
-                      disabled={!canScrollRight}
-                      aria-label="Scroll right"
-                      className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition"
-                    >
-                      <i className="ri-arrow-right-s-line text-[20px] text-[#0E1C29]" />
-                    </button>
-                  </div>
-                </div>
+                <Link
+                  href={`/preschools-in-${cityToSlug(primaryCity)}/`}
+                  className="text-[14px] font-semibold text-[#0E1C29] underline underline-offset-4 hover:text-[#774BE5] transition-colors shrink-0 mb-1"
+                >
+                  See all
+                </Link>
               </div>
 
               <div className="relative">
@@ -600,6 +579,26 @@ const SchoolDetails = () => {
                     </Link>
                   ))}
                 </div>
+              </div>
+
+              {/* Centered navigation arrows at the bottom */}
+              <div className="flex items-center justify-center gap-3 mt-6">
+                <button
+                  onClick={() => scrollSimilar(-1)}
+                  disabled={!canScrollLeft}
+                  aria-label="Scroll left"
+                  className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center bg-white hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition shadow-sm"
+                >
+                  <i className="ri-arrow-left-s-line text-[20px] text-[#0E1C29]" />
+                </button>
+                <button
+                  onClick={() => scrollSimilar(1)}
+                  disabled={!canScrollRight}
+                  aria-label="Scroll right"
+                  className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center bg-white hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition shadow-sm"
+                >
+                  <i className="ri-arrow-right-s-line text-[20px] text-[#0E1C29]" />
+                </button>
               </div>
             </div>
           )}
@@ -738,24 +737,21 @@ const SchoolDetails = () => {
 
           {/* Bottom sheet overlay */}
           <div
-            className={`md:hidden fixed inset-0 z-50 transition-all duration-300 ${
-              isContactSheetOpen ? "pointer-events-auto" : "pointer-events-none"
-            }`}
+            className={`md:hidden fixed inset-0 z-50 transition-all duration-300 ${isContactSheetOpen ? "pointer-events-auto" : "pointer-events-none"
+              }`}
           >
             {/* Dimmed backdrop */}
             <button
               aria-label="Close contact options"
               onClick={() => setIsContactSheetOpen(false)}
-              className={`absolute inset-0 bg-black/45 transition-opacity duration-300 ${
-                isContactSheetOpen ? "opacity-100" : "opacity-0"
-              }`}
+              className={`absolute inset-0 bg-black/45 transition-opacity duration-300 ${isContactSheetOpen ? "opacity-100" : "opacity-0"
+                }`}
             />
 
             {/* Sheet panel */}
             <div
-              className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl transition-transform duration-300 ease-out ${
-                isContactSheetOpen ? "translate-y-0" : "translate-y-full"
-              }`}
+              className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl transition-transform duration-300 ease-out ${isContactSheetOpen ? "translate-y-0" : "translate-y-full"
+                }`}
             >
               {/* Handle */}
               <div className="flex justify-center pt-3 pb-1">

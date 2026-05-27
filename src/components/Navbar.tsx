@@ -45,17 +45,28 @@ const Navbar = ({ textColor = "white", sticky = true }: NavbarProps) => {
 
   return (
     <div
-      className={`${sticky ? "fixed md:top-0 top-2" : "relative top-0 w-full"} md:left-0 left-0 right-0 z-[50000] md:px-0 md:py-0 px-3`}
+      className={`${
+        sticky
+          ? "fixed md:top-0 top-3 md:left-0 left-3 md:right-0 right-3"
+          : "relative top-0 w-full"
+      } z-[50000]`}
     >
       <div
-        className={`transition-all duration-500 ease-in-out md:px-10 md:py-5 px-3 py-2.5 ${
+        className={`relative transition-all duration-500 ease-in-out md:py-5 px-5 py-4 ${
           sticky && isScrolling && isDesktop
-            ? "bg-[#774BE5] md:w-[780px] w-full rounded-2xl mt-5 mx-auto md:top-10 z-[50000]"
-            : "w-full md:bg-white/5 md:py-5 bg-[#774BE5] rounded-lg md:rounded-none"
+            ? "bg-[#774BE5] md:w-[780px] w-full rounded-2xl mt-5 mx-auto md:top-10 z-[50000] md:px-10"
+            : sticky && !isDesktop
+            ? "bg-[#774BE5] w-full rounded-xl"
+            : "w-full md:bg-white/5 bg-[#774BE5] rounded-none md:px-0"
         }`}
       >
-        <div className="flex items-center justify-between w-full">
-          <Link href="/" className="hidden md:block">
+        <div
+          className={`flex items-center justify-between w-full ${sticky && isScrolling && isDesktop
+            ? ""
+            : "max-w-[1120px] mx-auto md:pl-0 md:pr-5 pl-0 pr-5"
+            }`}
+        >
+          <Link href="/" className={`hidden md:block ${sticky && isScrolling && isDesktop ? "" : "md:-ml-3"}`}>
             {isScrolling && isDesktop ? (
               <div className="flex items-center gap-2">
                 <Image
@@ -81,7 +92,7 @@ const Navbar = ({ textColor = "white", sticky = true }: NavbarProps) => {
               />
             )}
           </Link>
-          <Link href="/" className="flex items-center gap-1.5 md:hidden">
+          <Link href="/" className="flex items-center gap-1.5 md:hidden -ml-2">
             <Image
               src="/images/logo-icons.png"
               alt="logo"
@@ -97,32 +108,32 @@ const Navbar = ({ textColor = "white", sticky = true }: NavbarProps) => {
           </Link>
 
           <ul
-            className={`hidden md:flex items-center justify-center gap-20 font-bold text-base transition-all duration-500 ease-in-out flex-1`}
+            className={`hidden md:flex items-center justify-center font-bold text-base transition-all duration-500 ease-in-out ${sticky && isScrolling && isDesktop
+                ? "flex-1 relative left-0 translate-x-0 gap-10 lg:gap-14"
+                : "absolute left-1/2 -translate-x-1/2 lg:gap-20 gap-10"
+              }`}
           >
             <li
-              className={`transition-colors duration-500 ease-in-out delay-100 ${
-                isScrolling && isDesktop
-                  ? "text-white hover:text-[#0E1C29]"
-                  : `text-${textColor} hover:text-[#774BE5]`
-              }`}
+              className={`transition-colors duration-500 ease-in-out delay-100 ${isScrolling && isDesktop
+                ? "text-white hover:text-[#0E1C29]"
+                : `text-${textColor} hover:text-[#774BE5]`
+                }`}
             >
               <Link href="/">Home</Link>
             </li>
             <li
-              className={`transition-colors duration-500 ease-in-out delay-100 ${
-                isScrolling && isDesktop
-                  ? "text-white hover:text-[#0E1C29]"
-                  : `text-${textColor} hover:text-[#774BE5]`
-              }`}
+              className={`transition-colors duration-500 ease-in-out delay-100 ${isScrolling && isDesktop
+                ? "text-white hover:text-[#0E1C29]"
+                : `text-${textColor} hover:text-[#774BE5]`
+                }`}
             >
               <Link href="/directory">Browse</Link>
             </li>
             <li
-              className={`transition-colors duration-500 ease-in-out delay-100 ${
-                isScrolling && isDesktop
-                  ? "text-white hover:text-[#0E1C29]"
-                  : `text-${textColor} hover:text-[#774BE5]`
-              }`}
+              className={`transition-colors duration-500 ease-in-out delay-100 ${isScrolling && isDesktop
+                ? "text-white hover:text-[#0E1C29]"
+                : `text-${textColor} hover:text-[#774BE5]`
+                }`}
             >
               <Link href="/contact">Contact</Link>
             </li>
@@ -135,19 +146,16 @@ const Navbar = ({ textColor = "white", sticky = true }: NavbarProps) => {
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center relative">
               <div
-                className={`w-6 h-0.5 bg-white transition-all duration-300 ease-in-out absolute ${
-                  isMenuOpen ? "rotate-45" : "rotate-0 -translate-y-1.5"
-                }`}
+                className={`w-6 h-0.5 bg-white transition-all duration-300 ease-in-out absolute ${isMenuOpen ? "rotate-45" : "rotate-0 -translate-y-1.5"
+                  }`}
               ></div>
               <div
-                className={`w-6 h-0.5 bg-white transition-all duration-300 ease-in-out ${
-                  isMenuOpen ? "opacity-0" : "opacity-100"
-                }`}
+                className={`w-6 h-0.5 bg-white transition-all duration-300 ease-in-out ${isMenuOpen ? "opacity-0" : "opacity-100"
+                  }`}
               ></div>
               <div
-                className={`w-6 h-0.5 bg-white transition-all duration-300 ease-in-out absolute ${
-                  isMenuOpen ? "-rotate-45" : "rotate-0 translate-y-1.5"
-                }`}
+                className={`w-6 h-0.5 bg-white transition-all duration-300 ease-in-out absolute ${isMenuOpen ? "-rotate-45" : "rotate-0 translate-y-1.5"
+                  }`}
               ></div>
             </div>
           </button>
@@ -155,9 +163,8 @@ const Navbar = ({ textColor = "white", sticky = true }: NavbarProps) => {
 
         {/* Mobile Menu */}
         <div
-          className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out z-[999999] ${
-            isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out z-[999999] ${isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            }`}
         >
           <div className="px-3 py-6">
             <ul className="flex flex-col gap-6 font-bold text-base w-full">

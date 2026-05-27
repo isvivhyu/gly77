@@ -830,7 +830,7 @@ const SchoolDirectoryContent = () => {
         </div>
       </section>
 
-      <section className="w-full md:px-10 px-5 pb-25 pt-10 bg-white">
+      <section className="w-full md:px-10 px-5 pb-40 pt-10 bg-white">
         <div className="mb-6">
           <Breadcrumbs />
         </div>

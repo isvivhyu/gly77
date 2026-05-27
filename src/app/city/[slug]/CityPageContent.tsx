@@ -348,9 +348,16 @@ export default function CityPageContent({
         </div>
       )}
 
-      {/* Schools Section */}
       <section className="w-full bg-white">
-        <div className="max-w-7xl mx-auto px-5 md:px-10 pb-25 pt-8">
+        <div
+          className={`max-w-7xl mx-auto px-5 md:px-10 pt-8 ${
+            cityContent.about ||
+            (cityContent.faqs && cityContent.faqs.length > 0) ||
+            relatedCitySlugs.length > 0
+              ? "pb-25"
+              : "pb-36 md:pb-40"
+          }`}
+        >
           {/* Filter Bar */}
           <div className="mb-6 p-4 bg-gray-50 rounded-2xl border border-gray-100">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
@@ -629,7 +636,11 @@ export default function CityPageContent({
       {(cityContent.about ||
         (cityContent.faqs && cityContent.faqs.length > 0)) && (
         <section className="w-full bg-[#F9F9FB] border-t border-gray-100">
-          <div className="max-w-7xl mx-auto px-5 md:px-10 py-12 space-y-12">
+          <div
+            className={`max-w-7xl mx-auto px-5 md:px-10 pt-12 space-y-12 ${
+              relatedCitySlugs.length > 0 ? "pb-12" : "pb-36 md:pb-40"
+            }`}
+          >
             {cityContent.about && (
               <div>
                 <h2 className="text-[22px] font-semibold text-[#0E1C29] mb-4">
@@ -711,7 +722,7 @@ export default function CityPageContent({
       {/* Explore Other Cities */}
       {relatedCitySlugs.length > 0 && (
         <section className="w-full bg-white border-t border-gray-100">
-          <div className="max-w-7xl mx-auto px-5 md:px-10 py-14">
+          <div className="max-w-7xl mx-auto px-5 md:px-10 pt-14 pb-36 md:pb-40">
             <h2 className="text-[22px] font-semibold text-[#0E1C29] mb-6">
               Explore Preschools in Other Cities
             </h2>

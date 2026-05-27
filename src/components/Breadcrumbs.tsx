@@ -126,13 +126,13 @@ export default function Breadcrumbs({
   return (
     <nav
       aria-label="Breadcrumb"
-      className={`flex items-center gap-2 text-[14px] ${textColor} ${className}`}
+      className={`flex items-center flex-wrap gap-x-1.5 gap-y-1 text-[13px] md:text-[14px] ${textColor} ${className}`}
     >
       {items.map((item, index) => (
-        <span key={index} className="flex items-center gap-2">
+        <span key={index} className="flex items-center gap-1.5">
           {index > 0 && (
             <i
-              className={`ri-arrow-right-s-line ${separatorColor} text-[16px]`}
+              className={`ri-arrow-right-s-line ${separatorColor} text-[15px]`}
               aria-hidden
             />
           )}
@@ -144,7 +144,7 @@ export default function Breadcrumbs({
               {item.label}
             </Link>
           ) : (
-            <span className="font-semibold truncate max-w-[200px] md:max-w-none">
+            <span className="font-semibold truncate max-w-[140px] sm:max-w-[200px] md:max-w-none">
               {item.label}
             </span>
           )}
