@@ -268,28 +268,17 @@ const SchoolDetails = () => {
 
           {/* ── Hero: Main info ──────────────────────────────────────── */}
           <div className="pb-10">
-            {/* Name + share */}
-            <div className="flex items-start justify-between gap-4">
-              <h1 className="inline-flex items-center gap-2 text-[28px] md:text-[36px] font-bold text-[#0E1C29] leading-tight tracking-tight flex-wrap">
-                <span>{school.school}</span>
-                <span className="relative group inline-flex items-center">
-                  <i className="ri-verified-badge-fill text-[#774BE5] text-[20px] md:text-[24px] cursor-pointer" />
-                  <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[13px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                    Verified by Aralya
-                    <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-[#774BE5]" />
-                  </span>
+            {/* Name */}
+            <h1 className="inline-flex items-center gap-2 text-[28px] md:text-[36px] font-bold text-[#0E1C29] leading-tight tracking-tight flex-wrap">
+              <span>{school.school}</span>
+              <span className="relative group inline-flex items-center">
+                <i className="ri-verified-badge-fill text-[#774BE5] text-[20px] md:text-[24px] cursor-pointer" />
+                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#774BE5] text-white text-[13px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                  Verified by Aralya
+                  <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-[#774BE5]" />
                 </span>
-              </h1>
-              <button
-                className="shrink-0 mt-1 w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 text-[#374151] hover:border-[#774BE5] hover:text-[#774BE5] transition-colors"
-                onClick={() =>
-                  !isDesktop ? handleNativeShare() : setShowShareModal(true)
-                }
-                aria-label="Share school profile"
-              >
-                <i className="ri-share-2-line text-[17px]" />
-              </button>
-            </div>
+              </span>
+            </h1>
 
             {/* City + updated */}
             <div className="flex items-center gap-1.5 mt-3 flex-wrap">
@@ -312,18 +301,29 @@ const SchoolDetails = () => {
                 : " / year"}
             </p>
 
-            {/* Website shortcut */}
-            {school.website && (
-              <a
-                href={school.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 mt-3 text-[14px] text-[#774BE5] hover:underline font-medium"
+            {/* Website + share */}
+            <div className="flex items-center gap-3 mt-3">
+              {school.website && (
+                <a
+                  href={school.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-[14px] text-[#774BE5] hover:underline font-medium"
+                >
+                  <i className="ri-global-line text-[14px]" />
+                  Official website ↗
+                </a>
+              )}
+              <button
+                className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full border border-gray-200 text-[#374151] hover:border-[#774BE5] hover:text-[#774BE5] transition-colors"
+                onClick={() =>
+                  !isDesktop ? handleNativeShare() : setShowShareModal(true)
+                }
+                aria-label="Share school profile"
               >
-                <i className="ri-global-line text-[14px]" />
-                Official website ↗
-              </a>
-            )}
+                <i className="ri-share-2-line text-[13px]" />
+              </button>
+            </div>
           </div>
 
           {/* ── School image / logo (large, fills area) ──────────────── */}
@@ -346,7 +346,7 @@ const SchoolDetails = () => {
               <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-3">
                 Quick Info
               </h2>
-              <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-16">
+              <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-16 [&>div:first-child]:pt-1 md:[&>div:nth-child(2)]:pt-1">
                 {[
                   { label: "Tuition", value: school.quick_info.tuition },
                   { label: "Curriculum", value: school.quick_info.curriculum },
@@ -397,7 +397,7 @@ const SchoolDetails = () => {
             <h2 className="text-[24px] md:text-[30px] font-bold text-[#0E1C29] tracking-tight mb-3">
               Program Overview
             </h2>
-            <dl className="grid md:grid-cols-2 grid-cols-1 gap-x-16">
+            <dl className="grid md:grid-cols-2 grid-cols-1 gap-x-16 [&>div:first-child]:pt-1 md:[&>div:nth-child(2)]:pt-1">
               {[
                 { label: "Curriculum", value: school.curriculum },
                 { label: "Class Size", value: school.class_size },
